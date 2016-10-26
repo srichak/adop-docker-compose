@@ -43,7 +43,7 @@ services:
     container_name: ldap
     restart: always
     #build: ../images/docker-ldap/
-    image: avsdeveng/adop-ldap:0.0.1
+    image: avsdeveng/ldap:0.2.0
     networks:
       - adopnetwork
     expose:
@@ -111,7 +111,7 @@ services:
   sensu-uchiwa:
     container_name: sensu-uchiwa
     restart: always
-    image: avsdeveng/adop-uchiwa:0.0.1
+    image: sstarcher/uchiwa:0.15.0
     networks:
       - adopnetwork
     environment:
@@ -124,7 +124,7 @@ services:
   sensu-api:
     container_name: sensu-api
     restart: always
-    image: accenture/adop-sensu:0.1.0
+    image: avsdeveng/sensu:0.2.0
     networks:
       - adopnetwork
     command: api
@@ -138,7 +138,7 @@ services:
   sensu-server:
     container_name: sensu-server
     restart: always
-    image: accenture/adop-sensu:0.1.0
+    image: avsdeveng/sensu:0.2.0
     networks:
       - adopnetwork
     command: server
@@ -152,7 +152,7 @@ services:
   sensu-client:
     container_name: sensu-client
     restart: always
-    image: accenture/adop-sensu:0.1.0
+    image: avsdeveng/sensu:0.2.0
     networks:
       - adopnetwork
     command: client
@@ -166,7 +166,7 @@ services:
   sensu-rabbitmq:
     container_name: sensu-rabbitmq
     restart: always
-    image: avsdeveng/adop-rabbitmq:0.0.1
+    image: rabbitmq:3.5.7-management
     networks:
       - adopnetwork
     expose:
@@ -180,7 +180,7 @@ services:
   sensu-redis:
     container_name: sensu-redis
     restart: always
-    image: avsdeveng/adop-redis:0.0.1
+    image: redis:3.0.7
     networks:
       - adopnetwork
     expose:
@@ -206,7 +206,7 @@ services:
   sonar:
     container_name: sonar
     restart: always
-    image: avsdeveng/adop-sonar:0.0.1
+    image: avsdeveng/sonar:0.2.1
     #build: ../images/docker-sonar/
     depends_on:
       - sonar-mysql
@@ -287,7 +287,7 @@ services:
   jenkins-slave:
     container_name: jenkins-slave
     restart: always
-    image: avsdeveng/adop-jenkins-slave:0.0.1
+    image: avsdeveng/jenkins-slave:0.2.0
     networks:
       - adopnetwork
     privileged: true
@@ -365,7 +365,7 @@ services:
   nexus:
     container_name: nexus
     restart: always
-    image: avsdeveng/adop-nexus:0.0.1
+    image: avsdeveng/nexus:0.2.0
     networks:
       - adopnetwork
     expose:
@@ -385,7 +385,7 @@ services:
   ldap-ltb:
     container_name: ldap-ltb
     restart: always
-    image: avsdeveng/adop-ldap-ltb:0.0.1
+    image: avsdeveng/ldap-ltb:0.2.0
     networks:
       - adopnetwork
     expose:
