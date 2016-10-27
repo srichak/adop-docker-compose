@@ -16,6 +16,12 @@ services:
     volumes:
       - /data/gerrit_mysql_data:/var/lib/mysql
 
+  gitlab:
+    volumes:
+      - /data/gitlab_conf:/etc/gitlab
+      - /data/gitlab_logs:/var/log/gitlab
+      - /data/gitlab_data:/var/opt/gitlab
+
   sensu-api:
     volumes:
       - /data/sensu_api_conf:/etc/sensu/conf.d
