@@ -12,10 +12,6 @@ services:
       - /data/ldap_db:/var/lib/ldap
       - /data/ldap_static:/etc/ldap
 
-  gerrit-mysql:
-    volumes:
-      - /data/gerrit_mysql_data:/var/lib/mysql
-
   gitlab:
     volumes:
       - /data/gitlab_conf:/etc/gitlab

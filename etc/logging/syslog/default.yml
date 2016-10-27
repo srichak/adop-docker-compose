@@ -19,12 +19,12 @@ services:
         syslog-address: "udp://${LOGSTASH_HOST}:25826"
         tag: "ldap"
 
-  gerrit-mysql:
+  gitlab:
     logging:
       driver: "syslog"
       options:
         syslog-address: "udp://${LOGSTASH_HOST}:25826"
-        tag: "gerrit-mysql"
+        tag: "gitlab"
 
   sensu-uchiwa:
     logging:
