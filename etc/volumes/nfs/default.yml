@@ -13,6 +13,7 @@ services:
       - /data/ldap_static:/etc/ldap
       - /data/ldap_slapd:/var/lib/slapd
       - /data/ldap_certs:/etc/ssl/certs
+      - /data/ldap_export:/tmp
 
   gitlab:
     volumes:
