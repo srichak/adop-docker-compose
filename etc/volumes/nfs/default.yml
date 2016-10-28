@@ -11,6 +11,8 @@ services:
     volumes:
       - /data/ldap_db:/var/lib/ldap
       - /data/ldap_static:/etc/ldap
+      - /data/ldap_slapd:/var/lib/slapd
+      - /data/ldap_certs:/etc/ssl/certs
 
   gitlab:
     volumes:
