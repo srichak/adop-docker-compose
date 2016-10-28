@@ -13,14 +13,13 @@ services:
   proxy:
     container_name: proxy
     restart: always
-    image: avsdeveng/nginx:0.0.4
+    image: avsdeveng/nginx:0.0.2
     #    build: ./adop-nginx/
     networks:
       - adopnetwork
     ports:
       - "80:80"
       - "443:443"
-      - "3222:3222"
     depends_on:
       - gitlab
       - jenkins
@@ -69,7 +68,7 @@ services:
     expose:
       - "6379"
     environment:
-      - "constraint:tier==private"
+      - "constraint:tier==public"
 
   gitlab:
     container_name: gitlab
@@ -88,7 +87,7 @@ services:
       - gitlab-redis
       - ldap
     environment:
-      "constraint:tier": "=private"
+      "constraint:tier": "=public"
       "affinity:container": "=gitlab-redis"
       GITLAB_ROOT_PASSWORD: ${GITLAB_ROOT_PASSWORD} 
       GITLAB_OMNIBUS_CONFIG: |
