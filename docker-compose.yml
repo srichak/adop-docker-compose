@@ -44,7 +44,7 @@ services:
     container_name: ldap
     restart: always
     #build: ../images/docker-ldap/
-    image: avsdeveng/ldap:latest
+    image: avsdeveng/ldap:0.3.0
     networks:
       - adopnetwork
     expose:
