@@ -72,10 +72,13 @@ services:
 
   gitlab:
     container_name: gitlab
+    hostname: $(TARGET_HOST)
     restart: always
     image: avsdeveng/adop-gitlab:0.0.1
     networks:
-      - adopnetwork
+      adopnetwork:
+        aliases:
+          - gitlab
     ports:
       - "9080:9080"
       - "9443:443"
