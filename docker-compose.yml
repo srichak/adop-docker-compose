@@ -13,13 +13,13 @@ services:
   proxy:
     container_name: proxy
     restart: always
-    image: avsdeveng/nginx:0.0.8
+    image: avsdeveng/nginx:0.0.9
     #    build: ./adop-nginx/
     networks:
       - adopnetwork
     ports:
       - "80:80"
-      - "443:443"
+      - "81:81"
     depends_on:
       - gitlab
       - jenkins
