@@ -335,6 +335,8 @@ services:
     - selenium-hub
     networks:
       - adopnetwork
+    expose:
+    - "5555"
     environment:
       #SE_OPTS: "-nodeConfig /var/selenium-config/config-chrome.json"
       - "constraint:tier==private"
@@ -359,6 +361,7 @@ services:
       - "HUB_PORT_4444_TCP_PORT=4444"
     expose:
     - "5900"
+    - "5555"
     ports:
     - "5900:5900"
 
@@ -370,6 +373,8 @@ services:
     - selenium-hub
     networks:
       - adopnetwork
+    expose:
+    - "5555"
     environment:
       #SE_OPTS: "-nodeConfig /var/selenium-config/config-firefox.json"
       - "constraint:tier==private"
