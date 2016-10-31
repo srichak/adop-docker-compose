@@ -219,7 +219,7 @@ services:
   sonar:
     container_name: sonar
     restart: always
-    image: avsdeveng/sonar:0.2.1
+    image: avsdeveng/sonar:0.2.2
     #build: ../images/docker-sonar/
     depends_on:
       - sonar-mysql
@@ -241,6 +241,8 @@ services:
       - "LDAP_GROUP_REQUEST=(&(objectClass=groupOfUniqueNames)(uniqueMember={dn}))"
       - "LDAP_GROUP_ID_ATTRIBUTE=cn"
       - "SONARQUBE_JDBC_URL=jdbc:mysql://${SONAR_RDS_DB_URL}:${SONAR_RDS_DB_PORT}/${SONAR_MYSQL_DATABASE}?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true"
+      - "SONARQUBE_JDBC_PASSWORD=${SONARQUBE_JDBC_PASSWORD}"
+      - "SONAR_RDS_ENABLED=${SONAR_RDS_ENABLED}"
 
 # TODO cleanup jenkins environment variables for GitLab
   jenkins:
