@@ -240,7 +240,7 @@ services:
       - "LDAP_GROUP_BASE_DN=${LDAP_GROUP_BASE_DN},${LDAP_FULL_DOMAIN}"
       - "LDAP_GROUP_REQUEST=(&(objectClass=groupOfUniqueNames)(uniqueMember={dn}))"
       - "LDAP_GROUP_ID_ATTRIBUTE=cn"
-      - "SONARQUBE_JDBC_URL=jdbc:mysql://sonar-mysql:3306/${SONAR_MYSQL_DATABASE}?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true"
+      - "SONARQUBE_JDBC_URL=jdbc:mysql://${SONAR_RDS_DB_URL}:${SONAR_RDS_DB_PORT}/${SONAR_MYSQL_DATABASE}?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true"
 
 # TODO cleanup jenkins environment variables for GitLab
   jenkins:
