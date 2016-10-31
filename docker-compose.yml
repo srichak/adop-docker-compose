@@ -332,8 +332,6 @@ services:
     restart: always
     image: avsdeveng/selenium-node-chrome:0.0.2
     shm_size: 4g
-    links:
-      - selenium-hub:hub
     networks:
       - adopnetwork
     expose:
@@ -343,16 +341,14 @@ services:
       - "constraint:tier==private"
       - "DBUS_SESSION_BUS_ADDRESS=/dev/null"
       - "SE_OPTS=-host selenium-node-chrome"
-        #- "HUB_PORT_4444_TCP_ADDR=selenium-hub"
-        #- "HUB_PORT_4444_TCP_PORT=4444"
+      - "HUB_PORT_4444_TCP_ADDR=selenium-hub"
+      - "HUB_PORT_4444_TCP_PORT=4444"
   
   selenium-node-chrome-debug:
     container_name: selenium-node-chrome-debug
     restart: always
     image: avsdeveng/selenium-node-chrome-debug:0.0.2
     shm_size: 4g
-    links:
-      - selenium-hub:hub
     networks:
       - adopnetwork
     environment:
@@ -360,8 +356,8 @@ services:
       - "constraint:tier==private"
       - "DBUS_SESSION_BUS_ADDRESS=/dev/null"
       - "SE_OPTS=-host selenium-node-chrome-debug"
-        #- "HUB_PORT_4444_TCP_ADDR=selenium-hub"
-        #- "HUB_PORT_4444_TCP_PORT=4444"
+      - "HUB_PORT_4444_TCP_ADDR=selenium-hub"
+      - "HUB_PORT_4444_TCP_PORT=4444"
     expose:
     - "5900"
     - "5555"
@@ -372,8 +368,6 @@ services:
     container_name: selenium-node-firefox
     restart: always
     image: avsdeveng/selenium-node-firefox:0.0.2
-    links:
-      - selenium-hub:hub
     networks:
       - adopnetwork
     expose:
@@ -382,8 +376,8 @@ services:
       #SE_OPTS: "-nodeConfig /var/selenium-config/config-firefox.json"
       - "constraint:tier==private"
       - "SE_OPTS=-host selenium-node-firefox"
-        #  - "HUB_PORT_4444_TCP_ADDR=selenium-hub"
-        #- "HUB_PORT_4444_TCP_PORT=4444"
+      - "HUB_PORT_4444_TCP_ADDR=selenium-hub"
+      - "HUB_PORT_4444_TCP_PORT=4444"
 
   nexus:
     container_name: nexus
