@@ -325,6 +325,7 @@ services:
     - "4444:4444"
     environment:
       - "constraint:tier==private"
+      - "SE_OPTS=-host selenium-hub"
 
   selenium-node-chrome:
     container_name: selenium-node-chrome
@@ -335,12 +336,13 @@ services:
       - selenium-hub:hub
     networks:
       - adopnetwork
-    #expose:
-    #- "5555"
+    expose:
+    - "5555"
     environment:
       #SE_OPTS: "-nodeConfig /var/selenium-config/config-chrome.json"
       - "constraint:tier==private"
       - "DBUS_SESSION_BUS_ADDRESS=/dev/null"
+      - "SE_OPTS=-host selenium-node-chrome"
         #- "HUB_PORT_4444_TCP_ADDR=selenium-hub"
         #- "HUB_PORT_4444_TCP_PORT=4444"
   
@@ -357,11 +359,12 @@ services:
       #SE_OPTS: "-nodeConfig /var/selenium-config/config-chrome.json"
       - "constraint:tier==private"
       - "DBUS_SESSION_BUS_ADDRESS=/dev/null"
+      - "SE_OPTS=-host selenium-node-chrome-debug"
         #- "HUB_PORT_4444_TCP_ADDR=selenium-hub"
         #- "HUB_PORT_4444_TCP_PORT=4444"
     expose:
     - "5900"
-      #- "5555"
+    - "5555"
     ports:
     - "5900:5900"
 
@@ -373,11 +376,12 @@ services:
       - selenium-hub:hub
     networks:
       - adopnetwork
-    #expose:
-    #- "5555"
+    expose:
+    - "5555"
     environment:
       #SE_OPTS: "-nodeConfig /var/selenium-config/config-firefox.json"
       - "constraint:tier==private"
+      - "SE_OPTS=-host selenium-node-firefox"
         #  - "HUB_PORT_4444_TCP_ADDR=selenium-hub"
         #- "HUB_PORT_4444_TCP_PORT=4444"
 
