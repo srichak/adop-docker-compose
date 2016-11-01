@@ -316,6 +316,23 @@ services:
       - "INITIAL_ADMIN_USER=${INITIAL_ADMIN_USER}"
       - "INITIAL_ADMIN_PASSWORD=${INITIAL_ADMIN_PASSWORD_PLAIN}"
 
+  jenkins-slave:
+    container_name: jenkins-slave-node
+    restart: always
+    image: avsdeveng/jenkins_slave_node5.9.1:0.0.1
+    networks:
+      - adopnetwork
+    privileged: true
+    environment:
+      - "constraint:tier==jenkins"
+      - "SLAVE_LABELS=nodejs nodejs591 docker"
+      - "SWARM_MASTER=http://jenkins:8080/jenkins/"
+      - "SWARM_USER=jenkins"
+      - "SWARM_PASSWORD=${PASSWORD_JENKINS}"
+      - "SLAVE_EXECUTORS=${SLAVE_EXECUTORS}"
+      - "INITIAL_ADMIN_USER=${INITIAL_ADMIN_USER}"
+      - "INITIAL_ADMIN_PASSWORD=${INITIAL_ADMIN_PASSWORD_PLAIN}"
+
   selenium-hub:
     container_name: selenium-hub
     restart: always
