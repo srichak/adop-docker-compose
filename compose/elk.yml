@@ -16,7 +16,7 @@ services:
       - adopnetwork
     environment:
       - "constraint:tier==private"
-    command: elasticsearch -Des.network.host=0.0.0.0
+    command: elasticsearch
     ports:
       - "9200:9200"
     volumes:
