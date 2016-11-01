@@ -11,7 +11,7 @@ services:
   elasticsearch:
     container_name: elasticsearch
     restart: always
-    image: elasticsearch:2.1.1
+    image: elasticsearch:5.0.0
     networks:
       - adopnetwork
     environment:
