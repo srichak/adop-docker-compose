@@ -301,8 +301,8 @@ services:
       - "DOCKER_CLIENT_CERT_PATH=${DOCKER_CLIENT_CERT_PATH}"
       - "DOCKER_NETWORK_NAME=adopnetwork"
 
-  jenkins-slave:
-    container_name: jenkins-slave
+  jenkins-slave-java:
+    container_name: jenkins-slave-java
     restart: always
     image: avsdeveng/jenkins-slave:0.2.0
     networks:
@@ -316,7 +316,7 @@ services:
       - "INITIAL_ADMIN_USER=${INITIAL_ADMIN_USER}"
       - "INITIAL_ADMIN_PASSWORD=${INITIAL_ADMIN_PASSWORD_PLAIN}"
 
-  jenkins-slave:
+  jenkins-slave-node:
     container_name: jenkins-slave-node
     restart: always
     image: avsdeveng/jenkins_slave_node5.9.1:0.0.1
