@@ -259,7 +259,7 @@ services:
       - "50000:50000"  
     privileged: true
     environment:
-      - "constraint:tier==private"
+      - "constraint:tier==jenkins"
       - "ADOP_GERRIT_ENABLED=false"
       - "ADOP_PLATFORM_MANAGEMENT_VERSION=0.1.1"
       - "JENKINS_OPTS=--prefix=/jenkins"
@@ -309,7 +309,7 @@ services:
       - adopnetwork
     privileged: true
     environment:
-      - "constraint:tier==private"
+      - "constraint:tier==jenkins"
       - "SLAVE_LABELS=aws ldap java8 docker"
       - "SWARM_PASSWORD=${PASSWORD_JENKINS}"
       - "SLAVE_EXECUTORS=${SLAVE_EXECUTORS}"
