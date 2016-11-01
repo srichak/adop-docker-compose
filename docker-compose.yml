@@ -13,7 +13,7 @@ services:
   proxy:
     container_name: proxy
     restart: always
-    image: avsdeveng/nginx:0.0.10
+    image: avsdeveng/nginx:0.0.11
     #    build: ./adop-nginx/
     networks:
       - adopnetwork
@@ -103,6 +103,7 @@ services:
        redis['enable'] = false
        gitlab_rails['redis_host'] = 'gitlab-redis'
        gitlab_rails['redis_port'] = 6379
+       gitlan_rails['gravatar_plain_url'] = 'https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon'
        gitlab_rails['ldap_enabled'] = true
        gitlab_rails['ldap_servers'] = YAML.load <<-'EOS'
          main:
