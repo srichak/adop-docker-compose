@@ -11,12 +11,12 @@ services:
   elasticsearch:
     container_name: elasticsearch
     restart: always
-    image: elasticsearch:5.0.0
+    image: elasticsearch:2.4.1
     networks:
       - adopnetwork
     environment:
       - "constraint:tier==private"
-    command: elasticsearch
+    command: elasticsearch -Des.network.host=0.0.0.0
     ports:
       - "9200:9200"
     volumes:
