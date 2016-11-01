@@ -219,7 +219,7 @@ services:
   sonar:
     container_name: sonar
     restart: always
-    image: avsdeveng/sonar:sonar-5.6.3-dev
+    image: avsdeveng/sonar:sonar-5.2-dev
     #build: ../images/docker-sonar/
     depends_on:
       - sonar-mysql
