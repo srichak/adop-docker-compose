@@ -255,6 +255,8 @@ services:
     expose:
       - "8080"
       - "50000"
+    ports:
+      - "50000:50000"  
     privileged: true
     environment:
       - "constraint:tier==private"
