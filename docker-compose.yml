@@ -330,7 +330,7 @@ services:
     environment:
       - "constraint:tier==jenkins"
       - "SLAVE_NAME=SLAVE_NODE_591"
-      - "SLAVE_LABELS=nodejs nodejs591"
+      - "SLAVE_LABELS=nodejs nodejs_5_9_1"
       - "SWARM_MASTER=http://jenkins:8080/jenkins/"
       - "SWARM_USER=jenkins"
       - "SWARM_PASSWORD=${PASSWORD_JENKINS}"
