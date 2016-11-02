@@ -83,6 +83,8 @@ services:
       - "8080:8080"
     expose:
       - "9880"
+      - "22"
+      - "8080"
     depends_on:
       - gitlab-redis
       - ldap
