@@ -256,6 +256,7 @@ services:
       - "8080"
       - "50000"
     ports:
+      - "8080:8080"
       - "50000:50000"  
     privileged: true
     environment:
