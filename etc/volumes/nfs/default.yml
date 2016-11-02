@@ -48,7 +48,7 @@ services:
 
   sonar:
     volumes:
-      - /data/sonar_data:/opt/sonarqube/data
+      - /tmp/sonar_data:/opt/sonarqube/data
       - /data/sonar_extensions:/opt/sonarqube/extensions
       - /data/sonar_logs:/opt/sonarqube/logs
 
