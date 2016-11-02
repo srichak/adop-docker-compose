@@ -57,6 +57,14 @@ services:
     volumes:
       - /data/jenkins_home:/var/jenkins_home 
 
+  jenkins-slave-java:
+    volumes:
+      - /data/jenkins_slave_java:/workspace
+        
+  jenkins-slave-node:
+    volumes:
+      - /data/jenkins_slave_node:/workspace
+
   selenium-node-chrome:
     volumes:
       - /data/selenium_config:/var/selenium-config
