@@ -68,13 +68,6 @@ services:
         syslog-address: "udp://${LOGSTASH_HOST}:25826"
         tag: "sensu-redis"
 
-  sonar-mysql:
-    logging:
-      driver: "syslog"
-      options:
-        syslog-address: "udp://${LOGSTASH_HOST}:25826"
-        tag: "sonar-mysql"
-
   sonar:
     logging:
       driver: "syslog"

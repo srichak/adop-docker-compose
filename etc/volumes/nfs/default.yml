@@ -42,10 +42,6 @@ services:
     volumes:
       - /data/sensu_redis_data:/data
 
-  sonar-mysql:
-    volumes:
-      - /data/sonar_mysql_data:/var/lib/mysql 
-
   sonar:
     volumes:
       - /tmp/sonar_data:/opt/sonarqube/data

@@ -203,28 +203,11 @@ services:
     environment:
       - "constraint:tier==private"
 
-  sonar-mysql:
-    container_name: sonar-mysql
-    restart: always
-    image: mysql:5.6.25
-    networks:
-      - adopnetwork
-    expose:
-      - "3306"
-    environment:
-      - "constraint:tier==private"
-      - "MYSQL_ROOT_PASSWORD=${PASSWORD_SQL}"
-      - "MYSQL_USER=${SONAR_MYSQL_USER}"
-      - "MYSQL_PASSWORD=${SONAR_MYSQL_PASSWORD}"
-      - "MYSQL_DATABASE=${SONAR_MYSQL_DATABASE}"
-
   sonar:
     container_name: sonar
     restart: always
     image: avsdeveng/sonar:0.2.3
     #build: ../images/docker-sonar/
-    depends_on:
-      - sonar-mysql
     networks:
       - adopnetwork
     expose:
