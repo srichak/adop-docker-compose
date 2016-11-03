@@ -229,6 +229,31 @@ services:
       - "SONARQUBE_JDBC_PASSWORD=${SONARQUBE_JDBC_PASSWORD}"
       - "SONAR_RDS_ENABLED=${SONAR_RDS_ENABLED}"
 
+  sonar-test:
+    container_name: sonar-test
+    restart: always
+    image: avsdeveng/sonar
+    networks:
+      - adopnetwork
+    expose:
+      - "9000"
+    environment:
+      - "constraint:tier==private"
+      - "dependency:container==sonar-mysql"
+      - "LDAP_URL=ldap://${LDAP_SERVER}"
+      - "LDAP_BIND_DN=${LDAP_ADMIN},${LDAP_FULL_DOMAIN}"
+      - "LDAP_BIND_PASSWORD=${LDAP_PWD}"
+      - "LDAP_USER_BASE_DN=${LDAP_USER_BASE_DN},${LDAP_FULL_DOMAIN}"
+      - "LDAP_USER_REQUEST=(&(objectClass=inetOrgPerson)(uid={login}))"
+      - "LDAP_USER_REAL_NAME_ATTRIBUTE=displayName"
+      - "LDAP_USER_EMAIL_ATTRIBUTE=mail"
+      - "LDAP_GROUP_BASE_DN=${LDAP_GROUP_BASE_DN},${LDAP_FULL_DOMAIN}"
+      - "LDAP_GROUP_REQUEST=(&(objectClass=groupOfUniqueNames)(uniqueMember={dn}))"
+      - "LDAP_GROUP_ID_ATTRIBUTE=cn"
+      - "SONARQUBE_JDBC_URL=jdbc:mysql://${SONAR_RDS_DB_URL}:${SONAR_RDS_DB_PORT}/${SONAR_MYSQL_DATABASE}?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true"
+      - "SONARQUBE_JDBC_PASSWORD=${SONARQUBE_JDBC_PASSWORD}"
+      - "SONAR_RDS_ENABLED=${SONAR_RDS_ENABLED}"
+
 # TODO cleanup jenkins environment variables for GitLab
   jenkins:
     container_name: jenkins
