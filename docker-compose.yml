@@ -236,7 +236,7 @@ services:
     networks:
       - adopnetwork
     expose:
-      - "9001"
+      - "9000"
     environment:
       - "constraint:tier==private"
       - "LDAP_URL=ldap://${LDAP_SERVER}"
