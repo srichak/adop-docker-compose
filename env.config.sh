@@ -48,4 +48,4 @@ export SLAVE_EXECUTORS=1
 export DOCKER_CLIENT_CERT_PATH="//root/.docker/"
 
 # SSL Settings
-export PROTO="http"
+export PROTO="https"
