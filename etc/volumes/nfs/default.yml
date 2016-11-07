@@ -55,11 +55,11 @@ services:
 
   jenkins-slave-java:
     volumes:
-      - /data/jenkins_slave_java:/workspace
+      - /local_data/jenkins_slave_java:/workspace
         
   jenkins-slave-node:
     volumes:
-      - /data/jenkins_slave_node:/workspace
+      - /local_data/jenkins_slave_node:/workspace
 
   selenium-node-chrome:
     volumes:
