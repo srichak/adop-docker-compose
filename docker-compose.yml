@@ -232,7 +232,7 @@ services:
   sonar-test:
     container_name: sonar-test
     restart: always
-    image: avsdeveng/sonar:weak-auth
+    image: avsdeveng/sonar:fix-path
     networks:
       - adopnetwork
     expose:
