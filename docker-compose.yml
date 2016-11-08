@@ -232,7 +232,7 @@ services:
   sonar-test:
     container_name: sonar-test
     restart: always
-    image: avsdeveng/sonar:fix-path
+    image: avsdeveng/sonar:sonar-5.2-dev
     networks:
       - adopnetwork
     expose:
