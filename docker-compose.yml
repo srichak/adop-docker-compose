@@ -390,7 +390,7 @@ services:
   selenium-node-firefox:
     container_name: selenium-node-firefox
     restart: always
-    image: avsdeveng/selenium-node-firefox:0.0.2
+    image: avsdeveng/selenium-node-firefox:0.0.3
     networks:
       - adopnetwork
     expose:
