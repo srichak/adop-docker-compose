@@ -356,7 +356,7 @@ services:
   selenium-node-chrome:
     container_name: selenium-node-chrome
     restart: always
-    image: avsdeveng/selenium-node-chrome:0.0.2
+    image: avsdeveng/selenium-node-chrome:0.0.4
     shm_size: 4g
     networks:
       - adopnetwork
