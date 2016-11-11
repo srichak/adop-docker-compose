@@ -302,6 +302,7 @@ services:
       - "SLAVE_EXECUTORS=2"
       - "INITIAL_ADMIN_USER=${INITIAL_ADMIN_USER}"
       - "INITIAL_ADMIN_PASSWORD=${INITIAL_ADMIN_PASSWORD_PLAIN}"
+      - "SLAVE_MOUNT_PATH=${SLAVE_MOUNT_PATH_JAVA}"
 
   jenkins-slave-node:
     container_name: jenkins-slave-node
@@ -320,6 +321,7 @@ services:
       - "SLAVE_EXECUTORS=${SLAVE_EXECUTORS}"
       - "INITIAL_ADMIN_USER=${INITIAL_ADMIN_USER}"
       - "INITIAL_ADMIN_PASSWORD=${INITIAL_ADMIN_PASSWORD_PLAIN}"
+      - "SLAVE_MOUNT_PATH=${SLAVE_MOUNT_PATH_NODE}"
 
   jenkins-slave-ansible:
     container_name: jenkins-slave-ansible
@@ -335,6 +337,7 @@ services:
       - "SLAVE_NAME=SLAVE_ANSIBLE"
       - "SWARM_PASSWORD=${PASSWORD_JENKINS}"
       - "SLAVE_EXECUTORS=2"
+      - "SLAVE_MOUNT_PATH=${SLAVE_MOUNT_PATH_ANSIBLE}"
 
   selenium-hub:
     container_name: selenium-hub

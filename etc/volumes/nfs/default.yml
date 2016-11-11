@@ -55,11 +55,15 @@ services:
 
   jenkins-slave-java:
     volumes:
-      - /local_data/jenkins_slave_java:/workspace
+      - ${SLAVE_MOUNT_PATH_JAVA}:/workspace
         
   jenkins-slave-node:
     volumes:
-      - /local_data/jenkins_slave_node:/workspace
+      - ${SLAVE_MOUNT_PATH_NODE}:/workspace
+
+  jenkins-slave-ansible:
+    volumes:
+      - ${SLAVE_MOUNT_PATH_ANSIBLE}:/workspace
 
   selenium-node-chrome:
     volumes:
