@@ -256,7 +256,7 @@ gen_certs() {
     echo "Uploading certificates to Jenkins Slave at: ${CERT_PATH}"
     rm -f ${TEMP_CERT_PATH}/extfile.cnf ${TEMP_CERT_PATH}/client.csr
     set +e
-    for SLAVE in jenkins-slave-java jenkins-slave-node jenkins-slave-ansible
+    for SLAVE in jenkins-slave-java jenkins-slave-node jenkins-slave-ansible jenkins-slave-node-4
     do
         docker exec ${SLAVE} rm -rf ${CERT_PATH}
         docker cp ${TEMP_CERT_PATH} ${SLAVE}:${CERT_PATH}

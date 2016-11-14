@@ -326,7 +326,7 @@ services:
   jenkins-slave-node-4:
     container_name: jenkins-slave-node-4
     restart: always
-    image: avsdeveng/jenkins_slave_node:0.0.1-manual
+    image: avsdeveng/jenkins-slave-node:0.0.1-manual
     networks:
       - adopnetwork
     privileged: true
