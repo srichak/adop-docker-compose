@@ -61,6 +61,10 @@ services:
     volumes:
       - ${SLAVE_MOUNT_PATH_NODE}:/workspace
 
+  jenkins-slave-node:
+    volumes:
+      - ${SLAVE_MOUNT_PATH_NODE_4}:/workspace
+
   jenkins-slave-ansible:
     volumes:
       - ${SLAVE_MOUNT_PATH_ANSIBLE}:/workspace

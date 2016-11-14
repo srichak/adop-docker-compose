@@ -323,6 +323,25 @@ services:
       - "INITIAL_ADMIN_PASSWORD=${INITIAL_ADMIN_PASSWORD_PLAIN}"
       - "SLAVE_MOUNT_PATH=${SLAVE_MOUNT_PATH_NODE}"
 
+  jenkins-slave-node-4:
+    container_name: jenkins-slave-node-4
+    restart: always
+    image: avsdeveng/jenkins_slave_node:0.0.1-manual
+    networks:
+      - adopnetwork
+    privileged: true
+    environment:
+      - "constraint:tier==jenkins"
+      - "SLAVE_NAME=SLAVE_NODE_462"
+      - "SLAVE_LABELS=nodejs nodejs_4_6_2"
+      - "SWARM_MASTER=http://jenkins:8080/jenkins/"
+      - "SWARM_USER=jenkins"
+      - "SWARM_PASSWORD=${PASSWORD_JENKINS}"
+      - "SLAVE_EXECUTORS=${SLAVE_EXECUTORS}"
+      - "INITIAL_ADMIN_USER=${INITIAL_ADMIN_USER}"
+      - "INITIAL_ADMIN_PASSWORD=${INITIAL_ADMIN_PASSWORD_PLAIN}"
+      - "SLAVE_MOUNT_PATH=${SLAVE_MOUNT_PATH_NODE_4}"
+
   jenkins-slave-ansible:
     container_name: jenkins-slave-ansible
     restart: always
