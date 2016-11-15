@@ -326,14 +326,14 @@ services:
   jenkins-slave-node-4:
     container_name: jenkins-slave-node-4
     restart: always
-    image: avsdeveng/jenkins-slave-node:0.0.1-manual
+    image: avsdeveng/jenkins-slave-node:0.0.3-manual
     networks:
       - adopnetwork
     privileged: true
     environment:
       - "constraint:tier==jenkins"
-      - "SLAVE_NAME=SLAVE_NODE_462"
-      - "SLAVE_LABELS=nodejs nodejs_4_6_2"
+      - "SLAVE_NAME=SLAVE_NODE_447"
+      - "SLAVE_LABELS=nodejs nodejs_4_4_7"
       - "SWARM_MASTER=http://jenkins:8080/jenkins/"
       - "SWARM_USER=jenkins"
       - "SWARM_PASSWORD=${PASSWORD_JENKINS}"
