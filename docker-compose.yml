@@ -478,6 +478,7 @@ services:
   sftp:
     container_name: sftp
     restart: always
+    image: atmoz/sftp
     networks:
       - adopnetwork
     ports:
