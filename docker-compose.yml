@@ -290,13 +290,13 @@ services:
   jenkins-slave-java:
     container_name: jenkins-slave-java
     restart: always
-    image: avsdeveng/jenkins-slave:0.2.1
+    image: avsdeveng/jenkins-slave:0.2.2
     networks:
       - adopnetwork
     privileged: true
     environment:
       - "constraint:tier==jenkins"
-      - "SLAVE_LABELS=aws ldap java8 docker"
+      - "SLAVE_LABELS=aws ldap java7 docker"
       - "SLAVE_NAME=SLAVE_JAVA"
       - "SWARM_PASSWORD=${PASSWORD_JENKINS}"
       - "SLAVE_EXECUTORS=2"
