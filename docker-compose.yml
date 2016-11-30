@@ -423,7 +423,7 @@ services:
     environment:
       #SE_OPTS: "-nodeConfig /var/selenium-config/config-firefox.json"
       - "constraint:tier==private"
-      - "SE_OPTS=-host selenium-node-firefox"
+      #- "SE_OPTS=-host selenium-node-firefox"
       - "HUB_PORT_4444_TCP_ADDR=selenium-hub"
       - "HUB_PORT_4444_TCP_PORT=4444"
 
