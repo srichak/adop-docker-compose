@@ -403,7 +403,7 @@ services:
       #SE_OPTS: "-nodeConfig /var/selenium-config/config-chrome.json"
       - "constraint:tier==private"
       - "DBUS_SESSION_BUS_ADDRESS=/dev/null"
-      - "SE_OPTS=-host selenium-node-chrome"
+      #- "SE_OPTS=-host selenium-node-chrome"
       - "HUB_PORT_4444_TCP_ADDR=selenium-hub"
       - "HUB_PORT_4444_TCP_PORT=4444"
     expose:
