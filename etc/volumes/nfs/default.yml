@@ -69,13 +69,13 @@ services:
     volumes:
       - ${SLAVE_MOUNT_PATH_ANSIBLE}:/workspace
 
-  selenium-node-chrome-debug:
-    volumes:
-      - /data/selenium_config:/var/selenium-config
+#  selenium-node-chrome-debug:
+#    volumes:
+#      - /data/selenium_config:/var/selenium-config
 
-  selenium-node-firefox:
-    volumes:
-      - /data/selenium_config:/var/selenium-config
+#  selenium-node-firefox:
+#    volumes:
+#      - /data/selenium_config:/var/selenium-config
 
   nexus:
     volumes:
