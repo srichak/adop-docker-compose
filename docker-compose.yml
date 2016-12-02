@@ -364,7 +364,8 @@ services:
   selenium-hub:
     container_name: selenium-hub
     restart: always
-    image: avsdeveng/selenium-hub:0.0.2
+    image: selenium/hub:3.0.1-aluminum
+    #image: avsdeveng/selenium-hub:0.0.2
     networks:
       - adopnetwork
     expose:
@@ -379,7 +380,8 @@ services:
     container_name: selenium-node-chrome
     restart: always
 #    image: avsdeveng/selenium-node-chrome:0.0.4
-    image: avsdeveng/selenium-node-chrome-debug:0.0.2 #for debug node
+    image: selenium/node-chrome-debug:3.0.1-aluminum
+    #image: avsdeveng/selenium-node-chrome-debug:0.0.2 #for debug node
     shm_size: 4g
     networks:
       - adopnetwork
@@ -419,7 +421,8 @@ services:
   selenium-node-firefox:
     container_name: selenium-node-firefox
     restart: always
-    image: avsdeveng/selenium-node-firefox:0.0.3
+    image: selenium/node-firefox:3.0.1-aluminum
+    #image: avsdeveng/selenium-node-firefox:0.0.3
     networks:
       - adopnetwork
     expose:
