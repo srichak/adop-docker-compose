@@ -380,16 +380,16 @@ services:
     container_name: selenium-node-chrome
     restart: always
 #    image: avsdeveng/selenium-node-chrome:0.0.4
-    image: selenium/node-chrome-debug:3.0.1-aluminum
+    image: selenium/node-chrome:3.0.1-aluminum
     #image: avsdeveng/selenium-node-chrome-debug:0.0.2 #for debug node
     shm_size: 4g
     networks:
       - adopnetwork
     expose:
     - "5555"
-    - "5900" #for debug node
-    ports: #for debug node
-    - "5900:5900" #for debug node
+    #- "5900" #for debug node
+    #ports: #for debug node
+    #- "5900:5900" #for debug node
     environment:
       - "SE_OPTS=-nodeConfig /var/selenium-config/config-chrome.json"
       #- "SE_OPTS=-host selenium-node-chrome"
