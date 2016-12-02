@@ -390,11 +390,11 @@ services:
     - "5900:5900" #for debug node
     environment:
       #SE_OPTS: "-nodeConfig /var/selenium-config/config-chrome.json"
-      - "constraint:tier==private"
-      - "DBUS_SESSION_BUS_ADDRESS=/dev/null"
       - "SE_OPTS=-host selenium-node-chrome"
+      - "DBUS_SESSION_BUS_ADDRESS=/dev/null"
       - "HUB_PORT_4444_TCP_ADDR=selenium-hub"
       - "HUB_PORT_4444_TCP_PORT=4444"
+      - "constraint:tier==private"
   
 #  selenium-node-chrome:
 #    container_name: selenium-node-chrome
