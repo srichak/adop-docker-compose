@@ -391,8 +391,8 @@ services:
     ports: #for debug node
     - "5900:5900" #for debug node
     environment:
-      #SE_OPTS: "-nodeConfig /var/selenium-config/config-chrome.json"
-      - "SE_OPTS=-host selenium-node-chrome"
+      - "SE_OPTS=-nodeConfig /var/selenium-config/config-chrome.json"
+      #- "SE_OPTS=-host selenium-node-chrome"
       - "DBUS_SESSION_BUS_ADDRESS=/dev/null"
       - "HUB_PORT_4444_TCP_ADDR=selenium-hub"
       - "HUB_PORT_4444_TCP_PORT=4444"
