@@ -29,7 +29,7 @@ services:
       - sensu-uchiwa
       - ldap-ltb
       - ldap-phpadmin
- #     - selenium-hub
+      - selenium-hub
     environment:
       - "constraint:tier==public"
       - "LDAP_SERVER=${LDAP_SERVER}"
@@ -361,20 +361,20 @@ services:
       - "SLAVE_EXECUTORS=2"
       - "SLAVE_MOUNT_PATH=${SLAVE_MOUNT_PATH_ANSIBLE}"
 
-#  selenium-hub:
-#    container_name: selenium-hub
-#    restart: always
-#    image: selenium/hub:3.0.1-aluminum
-#    #image: avsdeveng/selenium-hub:0.0.2
-#    networks:
-#      - adopnetwork
-#    expose:
-#    - "4444"
-#    ports:
-#    - "4444:4444"
-#    environment:
-#      - "constraint:tier==private"
-#      - "SE_OPTS=-host selenium-hub"
+  selenium-hub:
+    container_name: selenium-hub
+    restart: always
+    image: selenium/hub:3.0.1-aluminum
+    #image: avsdeveng/selenium-hub:0.0.2
+    networks:
+      - adopnetwork
+    expose:
+    - "4444"
+    ports:
+    - "4444:4444"
+    environment:
+      - "constraint:tier==private"
+      - "SE_OPTS=-host selenium-hub"
 
 #  selenium-node-chrome:
 #    container_name: selenium-node-chrome
