@@ -13,7 +13,7 @@ services:
   proxy:
     container_name: proxy
     restart: always
-    image: avsdeveng/nginx:0.0.16
+    image: avsdeveng/nginx:0.0.17
     #    build: ./adop-nginx/
     networks:
       - adopnetwork
