@@ -497,15 +497,15 @@ services:
     environment:
       - "constraint:tier==public"
 
-  openvpn:
-    container_name: openvpn-server
-    restart: always
-    image: avsdeveng/docker-openvpn
-    networks:
-      - adopnetwork
-    ports:
-      - "8443:1194"
-    cap_add:
-      - NET_ADMIN
-    environment:
-      - "constraint:tier==public"
+#  openvpn:
+#    container_name: openvpn-server
+#    restart: always
+#    image: avsdeveng/docker-openvpn
+#    networks:
+#      - adopnetwork
+#    ports:
+#      - "8443:1194"
+#    cap_add:
+#      - NET_ADMIN
+#    environment:
+#      - "constraint:tier==public"
