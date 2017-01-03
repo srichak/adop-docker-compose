@@ -500,7 +500,7 @@ services:
   openvpn:
     container_name: openvpn-server
     restart: always
-    image: kylemanna/openvpn
+    image: avsdeveng/docker-openvpn
     networks:
       - adopnetwork
     ports:
