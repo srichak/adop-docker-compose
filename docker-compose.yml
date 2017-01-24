@@ -39,6 +39,10 @@ services:
       - "LDAP_GROUP_ATTRIBUTE=member"
       - "LDAP_USER_ID_ATTRIBUTE=cn"
       - "LDAP_USER_OBJECT_CLASS=inetOrgPerson"
+    logging:
+      driver: syslog
+      options:
+        syslog-address: "tcp://logstash:5000"
 
   ldap:
     container_name: ldap
