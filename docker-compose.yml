@@ -184,7 +184,8 @@ services:
       - "JENKINS_PREFIX=jenkins"
 #      - "CLIENT_SUBSCRIPTIONS=proxy,gerrit,jenkins,nexus,sonarqube,sensu,kibana"
       - "CLIENT_SUBSCRIPTIONS=10.0.0.27"
-      - "CLIENT_ADDRESS=sensu-client"
+#      - "CLIENT_ADDRESS=sensu-client"
+      - "CLIENT_ADDRESS=10.0.0.9"
       - "RABBITMQ_PORT=5671"
 
   sensu-rabbitmq:
