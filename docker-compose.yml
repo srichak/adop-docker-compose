@@ -179,10 +179,11 @@ services:
     environment:
       - "constraint:tier==private"
       - "CLIENT_NAME=core"
-      - "RABBITMQ_HOST=sensu-rabbitmq"
+#      - "RABBITMQ_HOST=sensu-rabbitmq"
+      - "RABBITMQ_HOST=10.0.0.14"
       - "JENKINS_PREFIX=jenkins"
 #      - "CLIENT_SUBSCRIPTIONS=proxy,gerrit,jenkins,nexus,sonarqube,sensu,kibana"
-      - "CLIENT_SUBSCRIPTIONS=proxy"
+      - "CLIENT_SUBSCRIPTIONS=10.0.0.27"
       - "CLIENT_ADDRESS=sensu-client"
       - "RABBITMQ_PORT=5671"
 
