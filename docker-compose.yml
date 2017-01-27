@@ -400,10 +400,10 @@ services:
     environment:
       - "constraint:tier==private"
       - "SE_OPTS=-host selenium-hub"
-#    logging:
-#     driver: syslog
-#     options:
-#       syslog-address: "udp://logstash:25826"
+    logging:
+      driver: syslog
+      options:
+        syslog-address: "udp://logstash:25826"
 
 
 #  selenium-node-chrome:
