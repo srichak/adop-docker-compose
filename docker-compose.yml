@@ -401,9 +401,9 @@ services:
       - "constraint:tier==private"
       - "SE_OPTS=-host selenium-hub"
     logging:
-      driver: "syslog"
-        options:
-          syslog-address: "tcp://logstash:500"
+      driver: syslog
+      options:
+        syslog-address: "tcp://logstash:5000"
 
 
 #  selenium-node-chrome:
