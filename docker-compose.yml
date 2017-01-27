@@ -385,6 +385,25 @@ services:
       - "SLAVE_EXECUTORS=2"
       - "SLAVE_MOUNT_PATH=${SLAVE_MOUNT_PATH_NODE_LATEST}"
     
+  jenkins-slave-node-latest_test:
+    container_name: jenkins-slave-node-latest
+    restart: always
+    image: avsdeveng/infra-toolkit-slave:0.1.1
+    networks:
+      - adopnetwork
+    privileged: true
+    environment:
+      - "constraint:tier==jenkins"
+      - "SLAVE_LABELS=ldap nodejs_latest_test"
+      - "SWARM_MASTER=http://jenkins:8080/jenkins/"
+      - "SLAVE_NAME=SLAVE_ANSIBLE_2_TEST"
+      - "SWARM_PASSWORD=${PASSWORD_JENKINS}"
+      - "SLAVE_EXECUTORS=2"
+      - "SLAVE_MOUNT_PATH=${SLAVE_MOUNT_PATH_NODE_LATEST_TEST}"
+    logging:
+      driver: "syslog"
+      options:
+        syslog-address: "tcp://logstash:5000"
 
   selenium-hub:
     container_name: selenium-hub
