@@ -403,7 +403,7 @@ services:
     logging:
       driver: syslog
       options:
-       syslog-address: "udp://logstash:25826"
+        syslog-address: "udp://logstash:25826"
 
 
 #  selenium-node-chrome:
