@@ -400,10 +400,10 @@ services:
       - "SWARM_PASSWORD=${PASSWORD_JENKINS}"
       - "SLAVE_EXECUTORS=2"
       - "SLAVE_MOUNT_PATH=${SLAVE_MOUNT_PATH_NODE_LATEST_TEST}"
-    logging:
-      driver: "syslog"
-      options:
-        syslog-address: "tcp://logstash:5000"
+ #   logging:
+ #     driver: "syslog"
+ #     options:
+ #       syslog-address: "tcp://logstash:5000"
 
   selenium-hub:
     container_name: selenium-hub
