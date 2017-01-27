@@ -401,7 +401,7 @@ services:
       - "constraint:tier==private"
       - "SE_OPTS=-host selenium-hub"
     logging:
-      driver: syslog
+      driver: "syslog"
       options:
         syslog-address: "udp://logstash:25826"
 
