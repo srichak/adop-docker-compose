@@ -402,8 +402,8 @@ services:
       - "SE_OPTS=-host selenium-hub"
     logging:
       driver: "syslog"
-      options:
-        syslog-address: "udp://logstash:25826"
+        options:
+          syslog-address: "tcp://logstash:500"
 
 
 #  selenium-node-chrome:
