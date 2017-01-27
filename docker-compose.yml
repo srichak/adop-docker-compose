@@ -386,7 +386,7 @@ services:
       - "SLAVE_MOUNT_PATH=${SLAVE_MOUNT_PATH_NODE_LATEST}"
     
   jenkins-slave-node-latest_test:
-    container_name: jenkins-slave-node-latest
+    container_name: jenkins-slave-node-latest-test
     restart: always
     image: avsdeveng/infra-toolkit-slave:0.1.1
     networks:
