@@ -550,7 +550,8 @@ services:
   openvpn:
     container_name: openvpn-server
     restart: always
-    image: avsdeveng/docker-openvpn
+    #image: avsdeveng/docker-openvpn
+    image: mario79/docker-openvpn
     networks:
       - adopnetwork
     ports:
