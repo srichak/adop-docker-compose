@@ -300,76 +300,76 @@ services:
       - "DOCKER_CLIENT_CERT_PATH=${DOCKER_CLIENT_CERT_PATH}"
       - "DOCKER_NETWORK_NAME=adopnetwork"
 
-  jenkins-slave-java:
-    container_name: jenkins-slave-java
-    restart: always
-    image: avsdeveng/jenkins-slave:0.2.2
-    networks:
-      - adopnetwork
-    privileged: true
-    environment:
-      - "constraint:tier==jenkins"
-      - "SLAVE_LABELS=aws ldap java7 docker"
-      - "SLAVE_NAME=SLAVE_JAVA"
-      - "SWARM_PASSWORD=${PASSWORD_JENKINS}"
-      - "SLAVE_EXECUTORS=2"
-      - "INITIAL_ADMIN_USER=${INITIAL_ADMIN_USER}"
-      - "INITIAL_ADMIN_PASSWORD=${INITIAL_ADMIN_PASSWORD_PLAIN}"
-      - "SLAVE_MOUNT_PATH=${SLAVE_MOUNT_PATH_JAVA}"
+#  jenkins-slave-java:
+#    container_name: jenkins-slave-java
+#    restart: always
+#    image: avsdeveng/jenkins-slave:0.2.2
+#    networks:
+#      - adopnetwork
+#    privileged: true
+#    environment:
+#      - "constraint:tier==jenkins"
+#      - "SLAVE_LABELS=aws ldap java7 docker"
+#      - "SLAVE_NAME=SLAVE_JAVA"
+#      - "SWARM_PASSWORD=${PASSWORD_JENKINS}"
+#      - "SLAVE_EXECUTORS=2"
+#      - "INITIAL_ADMIN_USER=${INITIAL_ADMIN_USER}"
+#      - "INITIAL_ADMIN_PASSWORD=${INITIAL_ADMIN_PASSWORD_PLAIN}"
+#      - "SLAVE_MOUNT_PATH=${SLAVE_MOUNT_PATH_JAVA}"
 
-  jenkins-slave-node:
-    container_name: jenkins-slave-node
-    restart: always
-    image: avsdeveng/jenkins_slave_node5.9.1:0.0.1
-    networks:
-      - adopnetwork
-    privileged: true
-    environment:
-      - "constraint:tier==jenkins"
-      - "SLAVE_NAME=SLAVE_NODE_591"
-      - "SLAVE_LABELS=nodejs nodejs_5_9_1"
-      - "SWARM_MASTER=http://jenkins:8080/jenkins/"
-      - "SWARM_USER=jenkins"
-      - "SWARM_PASSWORD=${PASSWORD_JENKINS}"
-      - "SLAVE_EXECUTORS=${SLAVE_EXECUTORS}"
-      - "INITIAL_ADMIN_USER=${INITIAL_ADMIN_USER}"
-      - "INITIAL_ADMIN_PASSWORD=${INITIAL_ADMIN_PASSWORD_PLAIN}"
-      - "SLAVE_MOUNT_PATH=${SLAVE_MOUNT_PATH_NODE}"
+#  jenkins-slave-node:
+#    container_name: jenkins-slave-node
+#    restart: always
+#    image: avsdeveng/jenkins_slave_node5.9.1:0.0.1
+#    networks:
+#      - adopnetwork
+#    privileged: true
+#    environment:
+#      - "constraint:tier==jenkins"
+#      - "SLAVE_NAME=SLAVE_NODE_591"
+#      - "SLAVE_LABELS=nodejs nodejs_5_9_1"
+#      - "SWARM_MASTER=http://jenkins:8080/jenkins/"
+#      - "SWARM_USER=jenkins"
+#      - "SWARM_PASSWORD=${PASSWORD_JENKINS}"
+#      - "SLAVE_EXECUTORS=${SLAVE_EXECUTORS}"
+#      - "INITIAL_ADMIN_USER=${INITIAL_ADMIN_USER}"
+#      - "INITIAL_ADMIN_PASSWORD=${INITIAL_ADMIN_PASSWORD_PLAIN}"
+#      - "SLAVE_MOUNT_PATH=${SLAVE_MOUNT_PATH_NODE}"
 
-  jenkins-slave-node-4:
-    container_name: jenkins-slave-node-4
-    restart: always
-    image: avsdeveng/jenkins-slave-node:0.0.3-manual
-    networks:
-      - adopnetwork
-    privileged: true
-    environment:
-      - "constraint:tier==jenkins"
-      - "SLAVE_NAME=SLAVE_NODE_447"
-      - "SLAVE_LABELS=nodejs nodejs_4_4_7"
-      - "SWARM_MASTER=http://jenkins:8080/jenkins/"
-      - "SWARM_USER=jenkins"
-      - "SWARM_PASSWORD=${PASSWORD_JENKINS}"
-      - "SLAVE_EXECUTORS=${SLAVE_EXECUTORS}"
-      - "INITIAL_ADMIN_USER=${INITIAL_ADMIN_USER}"
-      - "INITIAL_ADMIN_PASSWORD=${INITIAL_ADMIN_PASSWORD_PLAIN}"
-      - "SLAVE_MOUNT_PATH=${SLAVE_MOUNT_PATH_NODE_4}"
-
-  jenkins-slave-ansible:
-    container_name: jenkins-slave-ansible
-    restart: always
-    image: avsdeveng/infra-toolkit-slave:0.1.1
-    networks:
-      - adopnetwork
-    privileged: true
-    environment:
-      - "constraint:tier==jenkins"
-      - "SLAVE_LABELS=aws ldap java8 ansible terraform packer docker"
-      - "SWARM_MASTER=http://jenkins:8080/jenkins/"
-      - "SLAVE_NAME=SLAVE_ANSIBLE"
-      - "SWARM_PASSWORD=${PASSWORD_JENKINS}"
-      - "SLAVE_EXECUTORS=2"
-      - "SLAVE_MOUNT_PATH=${SLAVE_MOUNT_PATH_ANSIBLE}"
+#  jenkins-slave-node-4:
+#    container_name: jenkins-slave-node-4
+#    restart: always
+#    image: avsdeveng/jenkins-slave-node:0.0.3-manual
+#    networks:
+#      - adopnetwork
+#    privileged: true
+#    environment:
+#      - "constraint:tier==jenkins"
+#      - "SLAVE_NAME=SLAVE_NODE_447"
+#      - "SLAVE_LABELS=nodejs nodejs_4_4_7"
+#      - "SWARM_MASTER=http://jenkins:8080/jenkins/"
+#      - "SWARM_USER=jenkins"
+#      - "SWARM_PASSWORD=${PASSWORD_JENKINS}"
+#      - "SLAVE_EXECUTORS=${SLAVE_EXECUTORS}"
+#      - "INITIAL_ADMIN_USER=${INITIAL_ADMIN_USER}"
+#      - "INITIAL_ADMIN_PASSWORD=${INITIAL_ADMIN_PASSWORD_PLAIN}"
+#      - "SLAVE_MOUNT_PATH=${SLAVE_MOUNT_PATH_NODE_4}"
+#
+#  jenkins-slave-ansible:
+#    container_name: jenkins-slave-ansible
+#    restart: always
+#    image: avsdeveng/infra-toolkit-slave:0.1.1
+#    networks:
+#      - adopnetwork
+#    privileged: true
+#    environment:
+#      - "constraint:tier==jenkins"
+#      - "SLAVE_LABELS=aws ldap java8 ansible terraform packer docker"
+#      - "SWARM_MASTER=http://jenkins:8080/jenkins/"
+#      - "SLAVE_NAME=SLAVE_ANSIBLE"
+#      - "SWARM_PASSWORD=${PASSWORD_JENKINS}"
+#      - "SLAVE_EXECUTORS=2"
+#      - "SLAVE_MOUNT_PATH=${SLAVE_MOUNT_PATH_ANSIBLE}"
       
 #  jenkins-slave-node-latest:
 #    container_name: jenkins-slave-node-latest
