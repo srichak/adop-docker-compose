@@ -22,7 +22,7 @@ services:
       - "81:81"
     depends_on:
       - gitlab
-      - jenkins
+    #  - jenkins
       - sonar
       - nexus
       - ldap
