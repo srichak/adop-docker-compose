@@ -535,18 +535,6 @@ services:
       - "LDAP_SERVER_BIND_ID=${LDAP_ADMIN},${LDAP_FULL_DOMAIN}"
       - "LDAP_SERVER_BASE_DN=${LDAP_FULL_DOMAIN}"
 
-  sftp:
-    container_name: sftp
-    restart: always
-    image: atmoz/sftp
-    networks:
-      - adopnetwork
-    ports:
-      - "8081:22"
-    privileged: true
-    environment:
-      - "constraint:tier==public"
-
   openvpn:
     container_name: openvpn-server
     restart: always
