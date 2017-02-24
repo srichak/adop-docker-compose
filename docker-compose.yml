@@ -10,238 +10,238 @@ networks:
       name: ${CUSTOM_NETWORK_NAME}
 
 services:
-  proxy:
-    container_name: proxy
-    restart: always
-    image: avsdeveng/nginx:0.0.19
-    #    build: ./adop-nginx/
-    networks:
-      - adopnetwork
-    ports:
-      - "80:80"
-      - "81:81"
-#    depends_on:
-#      - gitlab
-#      - jenkins
-#      - sonar
-#      - nexus
-#      - ldap
-#      - sensu-uchiwa
-#      - ldap-ltb
-#      - ldap-phpadmin
-#      - selenium-hub
-    environment:
-      - "constraint:tier==public"
-      - "LDAP_SERVER=${LDAP_SERVER}"
-      - "LDAP_USERNAME=${LDAP_ADMIN},${LDAP_FULL_DOMAIN}"
-      - "LDAP_PASSWORD=${LDAP_PWD}"
-      - "LDAP_USER_BASE_DN=${LDAP_USER_BASE_DN},${LDAP_FULL_DOMAIN}"
-      - "LDAP_GROUP_ATTRIBUTE=member"
-      - "LDAP_USER_ID_ATTRIBUTE=cn"
-      - "LDAP_USER_OBJECT_CLASS=inetOrgPerson"
-#    logging:
-#      driver: syslog
-#      options:
-#        syslog-address: "tcp://logstash:5000"
-
-  ldap:
-    container_name: ldap
-    restart: always
-    #build: ../images/docker-ldap/
-    image: avsdeveng/ldap:0.3.0
-    #image: accenture/adop-ldap:0.1.3
-    networks:
-      - adopnetwork
-    expose:
-      - "389"
-    environment:
-      - "constraint:tier==private"
-      - "INITIAL_ADMIN_USER=${INITIAL_ADMIN_USER}"
-      - "INITIAL_ADMIN_PASSWORD=${INITIAL_ADMIN_PASSWORD}"
-      - "JENKINS_PASSWORD=${JENKINS_PWD}"
-      - "GERRIT_PASSWORD=${GERRIT_PWD}"
-      - "SLAPD_PASSWORD=${LDAP_PWD}"
-      - "SLAPD_DOMAIN=${LDAP_DOMAIN}"
-      - "SLAPD_FULL_DOMAIN=${LDAP_FULL_DOMAIN}"
-
-  gitlab-redis:
-    container_name: gitlab-redis
-    restart: always
-    image: redis:3.0.7
-    networks:
-      - adopnetwork
-    expose:
-      - "6379"
-    environment:
-      - "constraint:tier==public"
-
-  gitlab:
-    container_name: gitlab
-    restart: always
-    image: avsdeveng/adop-gitlab:0.0.1
-    networks:
-      - adopnetwork
-    ports:
-      - "9080:9080"
-      - "9443:443"
-      - "3222:22"
-      - "8080:8080"
-    expose:
-      - "9880"
-      - "22"
-      - "8080"
-    depends_on:
-      - gitlab-redis
-      - ldap
-    environment:
-      "constraint:tier": "=public"
-      "affinity:container": "=gitlab-redis"
-      GITLAB_ROOT_PASSWORD: ${GITLAB_ROOT_PASSWORD}
-      GITLAB_OMNIBUS_CONFIG: |
-       external_url 'http://${TARGET_HOST}/gitlab'
-       postgresql['enable'] = false
-       gitlab_rails['db_adapter'] = 'postgresql'
-       gitlab_rails['db_encoding'] = 'utf8'
-       gitlab_rails['db_host'] = '${GITLAB_DB_ENDPOINT}'
-       gitlab_rails['db_port'] = '${GITLAB_DB_PORT}'
-       gitlab_rails['db_username'] = '${GITLAB_DB_USER}'
-       gitlab_rails['db_password'] = '${PASSWORD_SQL}'
-       gitlab_rails['db_database'] = '${GITLAB_DB_NAME}'
-       redis['enable'] = false
-       gitlab_rails['redis_host'] = 'gitlab-redis'
-       gitlab_rails['redis_port'] = 6379
-       gitlab_rails['gravatar_plain_url'] = 'https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon'
-       gitlab_rails['gitlab_default_can_create_group'] = false
-       gitlab_rails['ldap_enabled'] = true
-       gitlab_rails['ldap_servers'] = YAML.load <<-'EOS'
-         main:
-           label: 'LDAP'
-           host: ldap
-           port: 389
-           uid: 'uid'
-           method: 'plain'
-           bind_dn: 'cn=admin,${LDAP_FULL_DOMAIN}'
-           password: '${LDAP_PWD}'
-           active_directory: false
-           allow_username_or_email_login: false
-           block_auto_created_users: false
-           base: '${LDAP_FULL_DOMAIN}'
-       EOS
-
-
-  sensu-uchiwa:
-    container_name: sensu-uchiwa
-    restart: always
-    image: sstarcher/uchiwa:0.15.0
-    networks:
-      - adopnetwork
-    environment:
-      - "constraint:tier==private"
-      - "SENSU_HOSTNAME=sensu-api"
-      - "SENSU_DC_NAME=Sensu"
-    expose:
-      - "3000"
-
-  sensu-api:
-    container_name: sensu-api
-    restart: always
-    image: avsdeveng/sensu:0.2.0
-    networks:
-      - adopnetwork
-    command: api
-    expose:
-      - "4567"
-    environment:
-      - "constraint:tier==private"
-      - "RABBITMQ_HOST=sensu-rabbitmq"
-      - "REDIS_HOST=sensu-redis"
-
-  sensu-server:
-    container_name: sensu-server
-    restart: always
-    image: avsdeveng/sensu:0.2.0
-    networks:
-      - adopnetwork
-    command: server
-    environment:
-      - "constraint:tier==private"
-      - "CLIENT_NAME=core"
-      - "API_HOST=sensu-api"
-      - "RABBITMQ_HOST=sensu-rabbitmq"
-      - "REDIS_HOST=sensu-redis"
-
-  sensu-client:
-    container_name: sensu-client
-    restart: always
-#    image: avsdeveng/sensu:0.2.0
-    image: avsdeveng/sensu:latest
-    networks:
-      - adopnetwork
-    command: client
-    environment:
-      - "constraint:tier==private"
-      - "CLIENT_NAME=core"
-      - "RABBITMQ_HOST=sensu-rabbitmq"
-#      - "RABBITMQ_HOST=10.0.0.14"
-      - "JENKINS_PREFIX=jenkins"
-      - "CLIENT_SUBSCRIPTIONS=proxy,gerrit,jenkins,nexus,sonarqube,sensu,kibana"
-#      - "CLIENT_SUBSCRIPTIONS=10.0.0.27"
-      - "CLIENT_ADDRESS=sensu-client"
-#      - "CLIENT_ADDRESS=10.0.0.9"
-      - "RABBITMQ_PORT=5671"
-
-  sensu-rabbitmq:
-    container_name: sensu-rabbitmq
-    restart: always
-    image: rabbitmq:3.5.7-management
-    networks:
-      - adopnetwork
-    expose:
-      - "5672"
-      - "5671"
-      - "15672"
-      - "15671"
-    environment:
-      - "constraint:tier==private"
-
-  sensu-redis:
-    container_name: sensu-redis
-    restart: always
-    image: redis:3.0.7
-    networks:
-      - adopnetwork
-    expose:
-      - "6379"
-    ports:
-      - "6379:6379"
-    environment:
-      - "constraint:tier==private"
-
-  sonar:
-    container_name: sonar
-    restart: always
-    image: avsdeveng/sonar:0.2.3
-    #build: ../images/docker-sonar/
-    networks:
-      - adopnetwork
-    expose:
-      - "9000"
-    environment:
-      - "constraint:tier==private"
-      - "dependency:container==sonar-mysql"
-      - "LDAP_URL=ldap://${LDAP_SERVER}"
-      - "LDAP_BIND_DN=${LDAP_ADMIN},${LDAP_FULL_DOMAIN}"
-      - "LDAP_BIND_PASSWORD=${LDAP_PWD}"
-      - "LDAP_USER_BASE_DN=${LDAP_USER_BASE_DN},${LDAP_FULL_DOMAIN}"
-      - "LDAP_USER_REQUEST=(&(objectClass=inetOrgPerson)(uid={login}))"
-      - "LDAP_USER_REAL_NAME_ATTRIBUTE=displayName"
-      - "LDAP_USER_EMAIL_ATTRIBUTE=mail"
-      - "LDAP_GROUP_BASE_DN=${LDAP_GROUP_BASE_DN},${LDAP_FULL_DOMAIN}"
-      - "LDAP_GROUP_REQUEST=(&(objectClass=groupOfUniqueNames)(uniqueMember={dn}))"
-      - "LDAP_GROUP_ID_ATTRIBUTE=cn"
-      - "SONARQUBE_JDBC_URL=jdbc:mysql://${SONAR_RDS_DB_URL}:${SONAR_RDS_DB_PORT}/${SONAR_MYSQL_DATABASE}?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true"
-      - "SONARQUBE_JDBC_PASSWORD=${SONARQUBE_JDBC_PASSWORD}"
-      - "SONAR_RDS_ENABLED=${SONAR_RDS_ENABLED}"
+#   proxy:
+#     container_name: proxy
+#     restart: always
+#     image: avsdeveng/nginx:0.0.19
+#     #    build: ./adop-nginx/
+#     networks:
+#       - adopnetwork
+#     ports:
+#       - "80:80"
+#       - "81:81"
+# #    depends_on:
+# #      - gitlab
+# #      - jenkins
+# #      - sonar
+# #      - nexus
+# #      - ldap
+# #      - sensu-uchiwa
+# #      - ldap-ltb
+# #      - ldap-phpadmin
+# #      - selenium-hub
+#     environment:
+#       - "constraint:tier==public"
+#       - "LDAP_SERVER=${LDAP_SERVER}"
+#       - "LDAP_USERNAME=${LDAP_ADMIN},${LDAP_FULL_DOMAIN}"
+#       - "LDAP_PASSWORD=${LDAP_PWD}"
+#       - "LDAP_USER_BASE_DN=${LDAP_USER_BASE_DN},${LDAP_FULL_DOMAIN}"
+#       - "LDAP_GROUP_ATTRIBUTE=member"
+#       - "LDAP_USER_ID_ATTRIBUTE=cn"
+#       - "LDAP_USER_OBJECT_CLASS=inetOrgPerson"
+# #    logging:
+# #      driver: syslog
+# #      options:
+# #        syslog-address: "tcp://logstash:5000"
+#
+#   ldap:
+#     container_name: ldap
+#     restart: always
+#     #build: ../images/docker-ldap/
+#     image: avsdeveng/ldap:0.3.0
+#     #image: accenture/adop-ldap:0.1.3
+#     networks:
+#       - adopnetwork
+#     expose:
+#       - "389"
+#     environment:
+#       - "constraint:tier==private"
+#       - "INITIAL_ADMIN_USER=${INITIAL_ADMIN_USER}"
+#       - "INITIAL_ADMIN_PASSWORD=${INITIAL_ADMIN_PASSWORD}"
+#       - "JENKINS_PASSWORD=${JENKINS_PWD}"
+#       - "GERRIT_PASSWORD=${GERRIT_PWD}"
+#       - "SLAPD_PASSWORD=${LDAP_PWD}"
+#       - "SLAPD_DOMAIN=${LDAP_DOMAIN}"
+#       - "SLAPD_FULL_DOMAIN=${LDAP_FULL_DOMAIN}"
+#
+#   gitlab-redis:
+#     container_name: gitlab-redis
+#     restart: always
+#     image: redis:3.0.7
+#     networks:
+#       - adopnetwork
+#     expose:
+#       - "6379"
+#     environment:
+#       - "constraint:tier==public"
+#
+#   gitlab:
+#     container_name: gitlab
+#     restart: always
+#     image: avsdeveng/adop-gitlab:0.0.1
+#     networks:
+#       - adopnetwork
+#     ports:
+#       - "9080:9080"
+#       - "9443:443"
+#       - "3222:22"
+#       - "8080:8080"
+#     expose:
+#       - "9880"
+#       - "22"
+#       - "8080"
+#     depends_on:
+#       - gitlab-redis
+#       - ldap
+#     environment:
+#       "constraint:tier": "=public"
+#       "affinity:container": "=gitlab-redis"
+#       GITLAB_ROOT_PASSWORD: ${GITLAB_ROOT_PASSWORD}
+#       GITLAB_OMNIBUS_CONFIG: |
+#        external_url 'http://${TARGET_HOST}/gitlab'
+#        postgresql['enable'] = false
+#        gitlab_rails['db_adapter'] = 'postgresql'
+#        gitlab_rails['db_encoding'] = 'utf8'
+#        gitlab_rails['db_host'] = '${GITLAB_DB_ENDPOINT}'
+#        gitlab_rails['db_port'] = '${GITLAB_DB_PORT}'
+#        gitlab_rails['db_username'] = '${GITLAB_DB_USER}'
+#        gitlab_rails['db_password'] = '${PASSWORD_SQL}'
+#        gitlab_rails['db_database'] = '${GITLAB_DB_NAME}'
+#        redis['enable'] = false
+#        gitlab_rails['redis_host'] = 'gitlab-redis'
+#        gitlab_rails['redis_port'] = 6379
+#        gitlab_rails['gravatar_plain_url'] = 'https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon'
+#        gitlab_rails['gitlab_default_can_create_group'] = false
+#        gitlab_rails['ldap_enabled'] = true
+#        gitlab_rails['ldap_servers'] = YAML.load <<-'EOS'
+#          main:
+#            label: 'LDAP'
+#            host: ldap
+#            port: 389
+#            uid: 'uid'
+#            method: 'plain'
+#            bind_dn: 'cn=admin,${LDAP_FULL_DOMAIN}'
+#            password: '${LDAP_PWD}'
+#            active_directory: false
+#            allow_username_or_email_login: false
+#            block_auto_created_users: false
+#            base: '${LDAP_FULL_DOMAIN}'
+#        EOS
+#
+#
+#   sensu-uchiwa:
+#     container_name: sensu-uchiwa
+#     restart: always
+#     image: sstarcher/uchiwa:0.15.0
+#     networks:
+#       - adopnetwork
+#     environment:
+#       - "constraint:tier==private"
+#       - "SENSU_HOSTNAME=sensu-api"
+#       - "SENSU_DC_NAME=Sensu"
+#     expose:
+#       - "3000"
+#
+#   sensu-api:
+#     container_name: sensu-api
+#     restart: always
+#     image: avsdeveng/sensu:0.2.0
+#     networks:
+#       - adopnetwork
+#     command: api
+#     expose:
+#       - "4567"
+#     environment:
+#       - "constraint:tier==private"
+#       - "RABBITMQ_HOST=sensu-rabbitmq"
+#       - "REDIS_HOST=sensu-redis"
+#
+#   sensu-server:
+#     container_name: sensu-server
+#     restart: always
+#     image: avsdeveng/sensu:0.2.0
+#     networks:
+#       - adopnetwork
+#     command: server
+#     environment:
+#       - "constraint:tier==private"
+#       - "CLIENT_NAME=core"
+#       - "API_HOST=sensu-api"
+#       - "RABBITMQ_HOST=sensu-rabbitmq"
+#       - "REDIS_HOST=sensu-redis"
+#
+#   sensu-client:
+#     container_name: sensu-client
+#     restart: always
+# #    image: avsdeveng/sensu:0.2.0
+#     image: avsdeveng/sensu:latest
+#     networks:
+#       - adopnetwork
+#     command: client
+#     environment:
+#       - "constraint:tier==private"
+#       - "CLIENT_NAME=core"
+#       - "RABBITMQ_HOST=sensu-rabbitmq"
+# #      - "RABBITMQ_HOST=10.0.0.14"
+#       - "JENKINS_PREFIX=jenkins"
+#       - "CLIENT_SUBSCRIPTIONS=proxy,gerrit,jenkins,nexus,sonarqube,sensu,kibana"
+# #      - "CLIENT_SUBSCRIPTIONS=10.0.0.27"
+#       - "CLIENT_ADDRESS=sensu-client"
+# #      - "CLIENT_ADDRESS=10.0.0.9"
+#       - "RABBITMQ_PORT=5671"
+#
+#   sensu-rabbitmq:
+#     container_name: sensu-rabbitmq
+#     restart: always
+#     image: rabbitmq:3.5.7-management
+#     networks:
+#       - adopnetwork
+#     expose:
+#       - "5672"
+#       - "5671"
+#       - "15672"
+#       - "15671"
+#     environment:
+#       - "constraint:tier==private"
+#
+#   sensu-redis:
+#     container_name: sensu-redis
+#     restart: always
+#     image: redis:3.0.7
+#     networks:
+#       - adopnetwork
+#     expose:
+#       - "6379"
+#     ports:
+#       - "6379:6379"
+#     environment:
+#       - "constraint:tier==private"
+#
+#   sonar:
+#     container_name: sonar
+#     restart: always
+#     image: avsdeveng/sonar:0.2.3
+#     #build: ../images/docker-sonar/
+#     networks:
+#       - adopnetwork
+#     expose:
+#       - "9000"
+#     environment:
+#       - "constraint:tier==private"
+#       - "dependency:container==sonar-mysql"
+#       - "LDAP_URL=ldap://${LDAP_SERVER}"
+#       - "LDAP_BIND_DN=${LDAP_ADMIN},${LDAP_FULL_DOMAIN}"
+#       - "LDAP_BIND_PASSWORD=${LDAP_PWD}"
+#       - "LDAP_USER_BASE_DN=${LDAP_USER_BASE_DN},${LDAP_FULL_DOMAIN}"
+#       - "LDAP_USER_REQUEST=(&(objectClass=inetOrgPerson)(uid={login}))"
+#       - "LDAP_USER_REAL_NAME_ATTRIBUTE=displayName"
+#       - "LDAP_USER_EMAIL_ATTRIBUTE=mail"
+#       - "LDAP_GROUP_BASE_DN=${LDAP_GROUP_BASE_DN},${LDAP_FULL_DOMAIN}"
+#       - "LDAP_GROUP_REQUEST=(&(objectClass=groupOfUniqueNames)(uniqueMember={dn}))"
+#       - "LDAP_GROUP_ID_ATTRIBUTE=cn"
+#       - "SONARQUBE_JDBC_URL=jdbc:mysql://${SONAR_RDS_DB_URL}:${SONAR_RDS_DB_PORT}/${SONAR_MYSQL_DATABASE}?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true"
+#       - "SONARQUBE_JDBC_PASSWORD=${SONARQUBE_JDBC_PASSWORD}"
+#       - "SONAR_RDS_ENABLED=${SONAR_RDS_ENABLED}"
 
 # TODO cleanup jenkins environment variables for GitLab
   jenkins:
@@ -301,262 +301,262 @@ services:
       - "DOCKER_CLIENT_CERT_PATH=${DOCKER_CLIENT_CERT_PATH}"
       - "DOCKER_NETWORK_NAME=adopnetwork"
 
-  jenkins-slave-java:
-    container_name: jenkins-slave-java
-    restart: always
-    image: avsdeveng/jenkins-slave:0.2.2
-    networks:
-      - adopnetwork
-    privileged: true
-    environment:
-      - "constraint:tier==jenkins"
-      - "SLAVE_LABELS=aws ldap java7 docker"
-      - "SLAVE_NAME=SLAVE_JAVA"
-      - "SWARM_PASSWORD=${PASSWORD_JENKINS}"
-      - "SLAVE_EXECUTORS=2"
-      - "INITIAL_ADMIN_USER=${INITIAL_ADMIN_USER}"
-      - "INITIAL_ADMIN_PASSWORD=${INITIAL_ADMIN_PASSWORD_PLAIN}"
-      - "SLAVE_MOUNT_PATH=${SLAVE_MOUNT_PATH_JAVA}"
-
-  jenkins-slave-node:
-    container_name: jenkins-slave-node
-    restart: always
-    image: avsdeveng/jenkins_slave_node5.9.1:0.0.1
-    networks:
-      - adopnetwork
-    privileged: true
-    environment:
-      - "constraint:tier==jenkins"
-      - "SLAVE_NAME=SLAVE_NODE_591"
-      - "SLAVE_LABELS=nodejs nodejs_5_9_1"
-      - "SWARM_MASTER=http://jenkins:8080/jenkins/"
-      - "SWARM_USER=jenkins"
-      - "SWARM_PASSWORD=${PASSWORD_JENKINS}"
-      - "SLAVE_EXECUTORS=${SLAVE_EXECUTORS}"
-      - "INITIAL_ADMIN_USER=${INITIAL_ADMIN_USER}"
-      - "INITIAL_ADMIN_PASSWORD=${INITIAL_ADMIN_PASSWORD_PLAIN}"
-      - "SLAVE_MOUNT_PATH=${SLAVE_MOUNT_PATH_NODE}"
-  jenkins-slave-node-4:
-    container_name: jenkins-slave-node-4
-    restart: always
-    image: avsdeveng/jenkins-slave-node:0.0.3-manual
-    networks:
-      - adopnetwork
-    privileged: true
-    environment:
-      - "constraint:tier==jenkins"
-      - "SLAVE_NAME=SLAVE_NODE_447"
-      - "SLAVE_LABELS=nodejs nodejs_4_4_7"
-      - "SWARM_MASTER=http://jenkins:8080/jenkins/"
-      - "SWARM_USER=jenkins"
-      - "SWARM_PASSWORD=${PASSWORD_JENKINS}"
-      - "SLAVE_EXECUTORS=${SLAVE_EXECUTORS}"
-      - "INITIAL_ADMIN_USER=${INITIAL_ADMIN_USER}"
-      - "INITIAL_ADMIN_PASSWORD=${INITIAL_ADMIN_PASSWORD_PLAIN}"
-      - "SLAVE_MOUNT_PATH=${SLAVE_MOUNT_PATH_NODE_4}"
-
-  jenkins-slave-ansible:
-    container_name: jenkins-slave-ansible
-    restart: always
-    image: avsdeveng/infra-toolkit-slave:0.1.1
-    networks:
-      - adopnetwork
-    privileged: true
-    environment:
-      - "constraint:tier==jenkins"
-      - "SLAVE_LABELS=aws ldap java8 ansible terraform packer docker"
-      - "SWARM_MASTER=http://jenkins:8080/jenkins/"
-      - "SLAVE_NAME=SLAVE_ANSIBLE"
-      - "SWARM_PASSWORD=${PASSWORD_JENKINS}"
-      - "SLAVE_EXECUTORS=2"
-      - "SLAVE_MOUNT_PATH=${SLAVE_MOUNT_PATH_ANSIBLE}"
-
-  jenkins-slave-node-latest:
-    container_name: jenkins-slave-node-latest
-    restart: always
-    image: avsdeveng/infra-toolkit-slave:0.1.1
-    networks:
-      - adopnetwork
-    privileged: true
-    environment:
-      - "constraint:tier==jenkins"
-      - "SLAVE_LABELS=ldap nodejs_latest"
-      - "SWARM_MASTER=http://jenkins:8080/jenkins/"
-      - "SLAVE_NAME=SLAVE_ANSIBLE_2"
-      - "SWARM_PASSWORD=${PASSWORD_JENKINS}"
-      - "SLAVE_EXECUTORS=2"
-      - "SLAVE_MOUNT_PATH=${SLAVE_MOUNT_PATH_NODE_LATEST}"
-
-  jenkins-slave-node-latest_test:
-    container_name: jenkins-slave-node-latest-test
-    restart: always
-    image: avsdeveng/infra-toolkit-slave:0.1.1
-    networks:
-      - adopnetwork
-    privileged: true
-    environment:
-      - "constraint:tier==jenkins"
-      - "SLAVE_LABELS=ldap nodejs_latest_test"
-      - "SWARM_MASTER=http://jenkins:8080/jenkins/"
-      - "SLAVE_NAME=SLAVE_ANSIBLE_2_TEST"
-      - "SWARM_PASSWORD=${PASSWORD_JENKINS}"
-      - "SLAVE_EXECUTORS=2"
-      - "SLAVE_MOUNT_PATH=${SLAVE_MOUNT_PATH_NODE_LATEST_TEST}"
-# #   logging:
- #     driver: "syslog"
-# #     options:
-# #       syslog-address: "tcp://logstash:5000"
-
-  selenium-hub:
-    container_name: selenium-hub
-    restart: always
-    image: selenium/hub:3.0.1-aluminum
-    #image: avsdeveng/selenium-hub:0.0.2
-    networks:
-      - adopnetwork
-    expose:
-    - "4444"
-    ports:
-    - "4444:4444"
-    environment:
-      - "constraint:tier==private"
-      - "SE_OPTS=-host selenium-hub"
-#    logging:
-#      driver: "syslog"
-#      options:
-#        syslog-address: "tcp://logstash:5000"
-
-#  selenium-node-chrome:
-#    container_name: selenium-node-chrome
-#    restart: always
-##    image: avsdeveng/selenium-node-chrome:0.0.4
-#    image: selenium/node-chrome:3.0.1-aluminum
-#    #image: avsdeveng/selenium-node-chrome-debug:0.0.2 #for debug node
-#    shm_size: 4g
-#    networks:
-#      - adopnetwork
-#    expose:
-#    - "5555"
-#    #- "5900" #for debug node
-#    #ports: #for debug node
-#    #- "5900:5900" #for debug node
-#    environment:
-#      - "SE_OPTS=-nodeConfig /var/selenium-config/config-chrome.json"
-#      #- "SE_OPTS=-host selenium-node-chrome"
-#      - "DBUS_SESSION_BUS_ADDRESS=/dev/null"
-#      - "HUB_PORT_4444_TCP_ADDR=selenium-hub"
-#      - "HUB_PORT_4444_TCP_PORT=4444"
-#      - "constraint:tier==private"
-
-#  selenium-node-chrome:
-#    container_name: selenium-node-chrome
-#    restart: always
-#    image: avsdeveng/selenium-node-chrome-debug:0.0.2
-#    shm_size: 4g
-#    networks:
-#      - adopnetwork
-#    environment:
-#      #SE_OPTS: "-nodeConfig /var/selenium-config/config-chrome.json"
-#      - "DBUS_SESSION_BUS_ADDRESS=/dev/null"
-#      - "SE_OPTS=-host selenium-node-chrome"
-#      - "HUB_PORT_4444_TCP_ADDR=selenium-hub"
-#      - "HUB_PORT_4444_TCP_PORT=4444"
-#      - "constraint:tier==private"
-#    expose:
-#    - "5900"
-#    - "5555"
-#    ports:
-#    - "5900:5900"
-
-#  selenium-node-firefox:
-#    container_name: selenium-node-firefox
-#    restart: always
-#    image: selenium/node-firefox:3.0.1-aluminum
-#    #image: avsdeveng/selenium-node-firefox:0.0.3
-#    networks:
-#      - adopnetwork
-#    expose:
-#    - "5555"
-#    environment:
-#      #SE_OPTS: "-nodeConfig /var/selenium-config/config-firefox.json"
-#      - "constraint:tier==private"
-#      #- "SE_OPTS=-host selenium-node-firefox"
-#      - "HUB_PORT_4444_TCP_ADDR=selenium-hub"
-#      - "HUB_PORT_4444_TCP_PORT=4444"
-
-  nexus:
-    container_name: nexus
-    restart: always
-    image: avsdeveng/nexus:0.2.0
-    networks:
-      - adopnetwork
-    expose:
-      - "8081"
-    environment:
-      - "constraint:tier==private"
-      - "NEXUS_BASE_URL=${PROTO}://${TARGET_HOST}/nexus"
-      - "LDAP_SEARCH_BASE=${LDAP_FULL_DOMAIN}"
-      - "LDAP_ENABLED=true"
-      - "LDAP_URL=ldap"
-      - "LDAP_BIND_DN=${LDAP_ADMIN},${LDAP_FULL_DOMAIN}"
-      - "LDAP_USER_PASSWORD_ATTRIBUTE=userPassword"
-      - "LDAP_USER_BASE_DN=${LDAP_USER_BASE_DN}"
-      - "LDAP_GROUP_BASE_DN=${LDAP_GROUP_BASE_DN}"
-      - "LDAP_BIND_PASSWORD=${LDAP_PWD}"
-
-  ldap-ltb:
-    container_name: ldap-ltb
-    restart: always
-    image: avsdeveng/ldap-ltb:0.2.0
-    networks:
-      - adopnetwork
-    expose:
-      - "80"
-    environment:
-      - "constraint:tier==private"
-      - "LDAP_LTB_URL=ldap://${LDAP_SERVER}"
-      - "LDAP_LTB_DN=${LDAP_ADMIN},${LDAP_FULL_DOMAIN}"
-      - "LDAP_LTB_PWD=${LDAP_PWD}"
-      - "LDAP_LTB_BS=${LDAP_FULL_DOMAIN}"
-
-  ldap-phpadmin:
-    container_name: ldap-phpadmin
-    restart: always
-    image: avsdeveng/adop-ldap-phpadmin:0.0.1
-    networks:
-      - adopnetwork
-    expose:
-      - "80"
-    environment:
-      - "constraint:tier==private"
-      - "LDAP_SERVER_NAME=LDAP"
-      - "LDAP_SERVER_HOST=ldap"
-      - "LDAP_SERVER_PORT=389"
-      - "LDAP_SERVER_BIND_ID=${LDAP_ADMIN},${LDAP_FULL_DOMAIN}"
-      - "LDAP_SERVER_BASE_DN=${LDAP_FULL_DOMAIN}"
-
-  sftp:
-    container_name: sftp
-    restart: always
-    image: atmoz/sftp
-    networks:
-      - adopnetwork
-    ports:
-      - "8081:22"
-    privileged: true
-    environment:
-      - "constraint:tier==public"
-
-  openvpn:
-    container_name: openvpn-server
-    restart: always
-    #image: avsdeveng/docker-openvpn
-    image: mario79/docker-openvpn
-    networks:
-      - adopnetwork
-    ports:
-      - "8443:1194"
-    cap_add:
-      - NET_ADMIN
-    environment:
-      - "constraint:tier==public"
+#   jenkins-slave-java:
+#     container_name: jenkins-slave-java
+#     restart: always
+#     image: avsdeveng/jenkins-slave:0.2.2
+#     networks:
+#       - adopnetwork
+#     privileged: true
+#     environment:
+#       - "constraint:tier==jenkins"
+#       - "SLAVE_LABELS=aws ldap java7 docker"
+#       - "SLAVE_NAME=SLAVE_JAVA"
+#       - "SWARM_PASSWORD=${PASSWORD_JENKINS}"
+#       - "SLAVE_EXECUTORS=2"
+#       - "INITIAL_ADMIN_USER=${INITIAL_ADMIN_USER}"
+#       - "INITIAL_ADMIN_PASSWORD=${INITIAL_ADMIN_PASSWORD_PLAIN}"
+#       - "SLAVE_MOUNT_PATH=${SLAVE_MOUNT_PATH_JAVA}"
+#
+#   jenkins-slave-node:
+#     container_name: jenkins-slave-node
+#     restart: always
+#     image: avsdeveng/jenkins_slave_node5.9.1:0.0.1
+#     networks:
+#       - adopnetwork
+#     privileged: true
+#     environment:
+#       - "constraint:tier==jenkins"
+#       - "SLAVE_NAME=SLAVE_NODE_591"
+#       - "SLAVE_LABELS=nodejs nodejs_5_9_1"
+#       - "SWARM_MASTER=http://jenkins:8080/jenkins/"
+#       - "SWARM_USER=jenkins"
+#       - "SWARM_PASSWORD=${PASSWORD_JENKINS}"
+#       - "SLAVE_EXECUTORS=${SLAVE_EXECUTORS}"
+#       - "INITIAL_ADMIN_USER=${INITIAL_ADMIN_USER}"
+#       - "INITIAL_ADMIN_PASSWORD=${INITIAL_ADMIN_PASSWORD_PLAIN}"
+#       - "SLAVE_MOUNT_PATH=${SLAVE_MOUNT_PATH_NODE}"
+#   jenkins-slave-node-4:
+#     container_name: jenkins-slave-node-4
+#     restart: always
+#     image: avsdeveng/jenkins-slave-node:0.0.3-manual
+#     networks:
+#       - adopnetwork
+#     privileged: true
+#     environment:
+#       - "constraint:tier==jenkins"
+#       - "SLAVE_NAME=SLAVE_NODE_447"
+#       - "SLAVE_LABELS=nodejs nodejs_4_4_7"
+#       - "SWARM_MASTER=http://jenkins:8080/jenkins/"
+#       - "SWARM_USER=jenkins"
+#       - "SWARM_PASSWORD=${PASSWORD_JENKINS}"
+#       - "SLAVE_EXECUTORS=${SLAVE_EXECUTORS}"
+#       - "INITIAL_ADMIN_USER=${INITIAL_ADMIN_USER}"
+#       - "INITIAL_ADMIN_PASSWORD=${INITIAL_ADMIN_PASSWORD_PLAIN}"
+#       - "SLAVE_MOUNT_PATH=${SLAVE_MOUNT_PATH_NODE_4}"
+#
+#   jenkins-slave-ansible:
+#     container_name: jenkins-slave-ansible
+#     restart: always
+#     image: avsdeveng/infra-toolkit-slave:0.1.1
+#     networks:
+#       - adopnetwork
+#     privileged: true
+#     environment:
+#       - "constraint:tier==jenkins"
+#       - "SLAVE_LABELS=aws ldap java8 ansible terraform packer docker"
+#       - "SWARM_MASTER=http://jenkins:8080/jenkins/"
+#       - "SLAVE_NAME=SLAVE_ANSIBLE"
+#       - "SWARM_PASSWORD=${PASSWORD_JENKINS}"
+#       - "SLAVE_EXECUTORS=2"
+#       - "SLAVE_MOUNT_PATH=${SLAVE_MOUNT_PATH_ANSIBLE}"
+#
+#   jenkins-slave-node-latest:
+#     container_name: jenkins-slave-node-latest
+#     restart: always
+#     image: avsdeveng/infra-toolkit-slave:0.1.1
+#     networks:
+#       - adopnetwork
+#     privileged: true
+#     environment:
+#       - "constraint:tier==jenkins"
+#       - "SLAVE_LABELS=ldap nodejs_latest"
+#       - "SWARM_MASTER=http://jenkins:8080/jenkins/"
+#       - "SLAVE_NAME=SLAVE_ANSIBLE_2"
+#       - "SWARM_PASSWORD=${PASSWORD_JENKINS}"
+#       - "SLAVE_EXECUTORS=2"
+#       - "SLAVE_MOUNT_PATH=${SLAVE_MOUNT_PATH_NODE_LATEST}"
+#
+#   jenkins-slave-node-latest_test:
+#     container_name: jenkins-slave-node-latest-test
+#     restart: always
+#     image: avsdeveng/infra-toolkit-slave:0.1.1
+#     networks:
+#       - adopnetwork
+#     privileged: true
+#     environment:
+#       - "constraint:tier==jenkins"
+#       - "SLAVE_LABELS=ldap nodejs_latest_test"
+#       - "SWARM_MASTER=http://jenkins:8080/jenkins/"
+#       - "SLAVE_NAME=SLAVE_ANSIBLE_2_TEST"
+#       - "SWARM_PASSWORD=${PASSWORD_JENKINS}"
+#       - "SLAVE_EXECUTORS=2"
+#       - "SLAVE_MOUNT_PATH=${SLAVE_MOUNT_PATH_NODE_LATEST_TEST}"
+# # #   logging:
+#  #     driver: "syslog"
+# # #     options:
+# # #       syslog-address: "tcp://logstash:5000"
+#
+#   selenium-hub:
+#     container_name: selenium-hub
+#     restart: always
+#     image: selenium/hub:3.0.1-aluminum
+#     #image: avsdeveng/selenium-hub:0.0.2
+#     networks:
+#       - adopnetwork
+#     expose:
+#     - "4444"
+#     ports:
+#     - "4444:4444"
+#     environment:
+#       - "constraint:tier==private"
+#       - "SE_OPTS=-host selenium-hub"
+# #    logging:
+# #      driver: "syslog"
+# #      options:
+# #        syslog-address: "tcp://logstash:5000"
+#
+# #  selenium-node-chrome:
+# #    container_name: selenium-node-chrome
+# #    restart: always
+# ##    image: avsdeveng/selenium-node-chrome:0.0.4
+# #    image: selenium/node-chrome:3.0.1-aluminum
+# #    #image: avsdeveng/selenium-node-chrome-debug:0.0.2 #for debug node
+# #    shm_size: 4g
+# #    networks:
+# #      - adopnetwork
+# #    expose:
+# #    - "5555"
+# #    #- "5900" #for debug node
+# #    #ports: #for debug node
+# #    #- "5900:5900" #for debug node
+# #    environment:
+# #      - "SE_OPTS=-nodeConfig /var/selenium-config/config-chrome.json"
+# #      #- "SE_OPTS=-host selenium-node-chrome"
+# #      - "DBUS_SESSION_BUS_ADDRESS=/dev/null"
+# #      - "HUB_PORT_4444_TCP_ADDR=selenium-hub"
+# #      - "HUB_PORT_4444_TCP_PORT=4444"
+# #      - "constraint:tier==private"
+#
+# #  selenium-node-chrome:
+# #    container_name: selenium-node-chrome
+# #    restart: always
+# #    image: avsdeveng/selenium-node-chrome-debug:0.0.2
+# #    shm_size: 4g
+# #    networks:
+# #      - adopnetwork
+# #    environment:
+# #      #SE_OPTS: "-nodeConfig /var/selenium-config/config-chrome.json"
+# #      - "DBUS_SESSION_BUS_ADDRESS=/dev/null"
+# #      - "SE_OPTS=-host selenium-node-chrome"
+# #      - "HUB_PORT_4444_TCP_ADDR=selenium-hub"
+# #      - "HUB_PORT_4444_TCP_PORT=4444"
+# #      - "constraint:tier==private"
+# #    expose:
+# #    - "5900"
+# #    - "5555"
+# #    ports:
+# #    - "5900:5900"
+#
+# #  selenium-node-firefox:
+# #    container_name: selenium-node-firefox
+# #    restart: always
+# #    image: selenium/node-firefox:3.0.1-aluminum
+# #    #image: avsdeveng/selenium-node-firefox:0.0.3
+# #    networks:
+# #      - adopnetwork
+# #    expose:
+# #    - "5555"
+# #    environment:
+# #      #SE_OPTS: "-nodeConfig /var/selenium-config/config-firefox.json"
+# #      - "constraint:tier==private"
+# #      #- "SE_OPTS=-host selenium-node-firefox"
+# #      - "HUB_PORT_4444_TCP_ADDR=selenium-hub"
+# #      - "HUB_PORT_4444_TCP_PORT=4444"
+#
+#   nexus:
+#     container_name: nexus
+#     restart: always
+#     image: avsdeveng/nexus:0.2.0
+#     networks:
+#       - adopnetwork
+#     expose:
+#       - "8081"
+#     environment:
+#       - "constraint:tier==private"
+#       - "NEXUS_BASE_URL=${PROTO}://${TARGET_HOST}/nexus"
+#       - "LDAP_SEARCH_BASE=${LDAP_FULL_DOMAIN}"
+#       - "LDAP_ENABLED=true"
+#       - "LDAP_URL=ldap"
+#       - "LDAP_BIND_DN=${LDAP_ADMIN},${LDAP_FULL_DOMAIN}"
+#       - "LDAP_USER_PASSWORD_ATTRIBUTE=userPassword"
+#       - "LDAP_USER_BASE_DN=${LDAP_USER_BASE_DN}"
+#       - "LDAP_GROUP_BASE_DN=${LDAP_GROUP_BASE_DN}"
+#       - "LDAP_BIND_PASSWORD=${LDAP_PWD}"
+#
+#   ldap-ltb:
+#     container_name: ldap-ltb
+#     restart: always
+#     image: avsdeveng/ldap-ltb:0.2.0
+#     networks:
+#       - adopnetwork
+#     expose:
+#       - "80"
+#     environment:
+#       - "constraint:tier==private"
+#       - "LDAP_LTB_URL=ldap://${LDAP_SERVER}"
+#       - "LDAP_LTB_DN=${LDAP_ADMIN},${LDAP_FULL_DOMAIN}"
+#       - "LDAP_LTB_PWD=${LDAP_PWD}"
+#       - "LDAP_LTB_BS=${LDAP_FULL_DOMAIN}"
+#
+#   ldap-phpadmin:
+#     container_name: ldap-phpadmin
+#     restart: always
+#     image: avsdeveng/adop-ldap-phpadmin:0.0.1
+#     networks:
+#       - adopnetwork
+#     expose:
+#       - "80"
+#     environment:
+#       - "constraint:tier==private"
+#       - "LDAP_SERVER_NAME=LDAP"
+#       - "LDAP_SERVER_HOST=ldap"
+#       - "LDAP_SERVER_PORT=389"
+#       - "LDAP_SERVER_BIND_ID=${LDAP_ADMIN},${LDAP_FULL_DOMAIN}"
+#       - "LDAP_SERVER_BASE_DN=${LDAP_FULL_DOMAIN}"
+#
+#   sftp:
+#     container_name: sftp
+#     restart: always
+#     image: atmoz/sftp
+#     networks:
+#       - adopnetwork
+#     ports:
+#       - "8081:22"
+#     privileged: true
+#     environment:
+#       - "constraint:tier==public"
+#
+#   openvpn:
+#     container_name: openvpn-server
+#     restart: always
+#     #image: avsdeveng/docker-openvpn
+#     image: mario79/docker-openvpn
+#     networks:
+#       - adopnetwork
+#     ports:
+#       - "8443:1194"
+#     cap_add:
+#       - NET_ADMIN
+#     environment:
+#       - "constraint:tier==public"
