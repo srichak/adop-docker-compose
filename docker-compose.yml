@@ -10,16 +10,16 @@ networks:
       name: ${CUSTOM_NETWORK_NAME}
 
 services:
-   proxy:
-     container_name: proxy
-     restart: always
-     image: avsdeveng/nginx:0.0.19
+  proxy:
+    container_name: proxy
+    restart: always
+    image: avsdeveng/nginx:0.0.19
      #    build: ./adop-nginx/
-     networks:
-       - adopnetwork
-     ports:
-       - "80:80"
-       - "81:81"
+    networks:
+      - adopnetwork
+    ports:
+      - "80:80"
+      - "81:81"
 #    depends_on:
 #      - gitlab
 #      - jenkins
@@ -30,90 +30,90 @@ services:
 #      - ldap-ltb
 #      - ldap-phpadmin
 #      - selenium-hub
-     environment:
-       - "constraint:tier==public"
-       - "LDAP_SERVER=${LDAP_SERVER}"
-       - "LDAP_USERNAME=${LDAP_ADMIN},${LDAP_FULL_DOMAIN}"
-       - "LDAP_PASSWORD=${LDAP_PWD}"
-       - "LDAP_USER_BASE_DN=${LDAP_USER_BASE_DN},${LDAP_FULL_DOMAIN}"
-       - "LDAP_GROUP_ATTRIBUTE=member"
-       - "LDAP_USER_ID_ATTRIBUTE=cn"
-       - "LDAP_USER_OBJECT_CLASS=inetOrgPerson"
+    environment:
+      - "constraint:tier==public"
+      - "LDAP_SERVER=${LDAP_SERVER}"
+      - "LDAP_USERNAME=${LDAP_ADMIN},${LDAP_FULL_DOMAIN}"
+      - "LDAP_PASSWORD=${LDAP_PWD}"
+      - "LDAP_USER_BASE_DN=${LDAP_USER_BASE_DN},${LDAP_FULL_DOMAIN}"
+      - "LDAP_GROUP_ATTRIBUTE=member"
+      - "LDAP_USER_ID_ATTRIBUTE=cn"
+      - "LDAP_USER_OBJECT_CLASS=inetOrgPerson"
 #    logging:
 #      driver: syslog
 #      options:
 #        syslog-address: "tcp://logstash:5000"
 #
-   ldap:
-     container_name: ldap
-     restart: always
+  ldap:
+    container_name: ldap
+    restart: always
      #build: ../images/docker-ldap/
-     image: avsdeveng/ldap:0.3.0
+    image: avsdeveng/ldap:0.3.0
      #image: accenture/adop-ldap:0.1.3
-     networks:
-       - adopnetwork
-     expose:
-       - "389"
-     environment:
-       - "constraint:tier==private"
-       - "INITIAL_ADMIN_USER=${INITIAL_ADMIN_USER}"
-       - "INITIAL_ADMIN_PASSWORD=${INITIAL_ADMIN_PASSWORD}"
-       - "JENKINS_PASSWORD=${JENKINS_PWD}"
-       - "GERRIT_PASSWORD=${GERRIT_PWD}"
-       - "SLAPD_PASSWORD=${LDAP_PWD}"
-       - "SLAPD_DOMAIN=${LDAP_DOMAIN}"
-       - "SLAPD_FULL_DOMAIN=${LDAP_FULL_DOMAIN}"
+    networks:
+      - adopnetwork
+    expose:
+      - "389"
+    environment:
+      - "constraint:tier==private"
+      - "INITIAL_ADMIN_USER=${INITIAL_ADMIN_USER}"
+      - "INITIAL_ADMIN_PASSWORD=${INITIAL_ADMIN_PASSWORD}"
+      - "JENKINS_PASSWORD=${JENKINS_PWD}"
+      - "GERRIT_PASSWORD=${GERRIT_PWD}"
+      - "SLAPD_PASSWORD=${LDAP_PWD}"
+      - "SLAPD_DOMAIN=${LDAP_DOMAIN}"
+      - "SLAPD_FULL_DOMAIN=${LDAP_FULL_DOMAIN}"
+  
+  gitlab-redis:
+    container_name: gitlab-redis
+    restart: always
+    image: redis:3.0.7
+    networks:
+      - adopnetwork
+    expose:
+      - "6379"
+    environment:
+      - "constraint:tier==public"
 
-   gitlab-redis:
-     container_name: gitlab-redis
-     restart: always
-     image: redis:3.0.7
-     networks:
-       - adopnetwork
-     expose:
-       - "6379"
-     environment:
-       - "constraint:tier==public"
-
-   gitlab:
-     container_name: gitlab
-     restart: always
-     image: avsdeveng/adop-gitlab:0.0.1
-     networks:
-       - adopnetwork
-     ports:
-       - "9080:9080"
-       - "9443:443"
-       - "3222:22"
-       - "8080:8080"
-     expose:
-       - "9880"
-       - "22"
-       - "8080"
-     depends_on:
-       - gitlab-redis
-       - ldap
-     environment:
-       "constraint:tier": "=public"
-       "affinity:container": "=gitlab-redis"
-       GITLAB_ROOT_PASSWORD: ${GITLAB_ROOT_PASSWORD}
-       GITLAB_OMNIBUS_CONFIG: |
-        external_url 'http://${TARGET_HOST}/gitlab'
-        postgresql['enable'] = false
-        gitlab_rails['db_adapter'] = 'postgresql'
-        gitlab_rails['db_encoding'] = 'utf8'
-        gitlab_rails['db_host'] = '${GITLAB_DB_ENDPOINT}'
-        gitlab_rails['db_port'] = '${GITLAB_DB_PORT}'
-        gitlab_rails['db_username'] = '${GITLAB_DB_USER}'
-        gitlab_rails['db_password'] = '${PASSWORD_SQL}'
-        gitlab_rails['db_database'] = '${GITLAB_DB_NAME}'
-        redis['enable'] = false
-        gitlab_rails['redis_host'] = 'gitlab-redis'
-        gitlab_rails['redis_port'] = 6379
-        gitlab_rails['gravatar_plain_url'] = 'https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon'
-        gitlab_rails['gitlab_default_can_create_group'] = false
-        gitlab_rails['ldap_enabled'] = true
-        gitlab_rails['ldap_servers'] = YAML.load <<-'EOS'
+  gitlab:
+    container_name: gitlab
+    restart: always
+    image: avsdeveng/adop-gitlab:0.0.1
+    networks:
+      - adopnetwork
+    ports:
+      - "9080:9080"
+      - "9443:443"
+      - "3222:22"
+      - "8080:8080"
+    expose:
+      - "9880"
+      - "22"
+      - "8080"
+    depends_on:
+      - gitlab-redis
+      - ldap
+    environment:
+      "constraint:tier": "=public"
+      "affinity:container": "=gitlab-redis"
+      GITLAB_ROOT_PASSWORD: ${GITLAB_ROOT_PASSWORD}
+      GITLAB_OMNIBUS_CONFIG: |
+      external_url 'http://${TARGET_HOST}/gitlab'
+      postgresql['enable'] = false
+      gitlab_rails['db_adapter'] = 'postgresql'
+      gitlab_rails['db_encoding'] = 'utf8'
+      gitlab_rails['db_host'] = '${GITLAB_DB_ENDPOINT}'
+      gitlab_rails['db_port'] = '${GITLAB_DB_PORT}'
+      gitlab_rails['db_username'] = '${GITLAB_DB_USER}'
+      gitlab_rails['db_password'] = '${PASSWORD_SQL}'
+      gitlab_rails['db_database'] = '${GITLAB_DB_NAME}'
+      redis['enable'] = false
+      gitlab_rails['redis_host'] = 'gitlab-redis'
+      gitlab_rails['redis_port'] = 6379
+      gitlab_rails['gravatar_plain_url'] = 'https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon'
+      gitlab_rails['gitlab_default_can_create_group'] = false
+      gitlab_rails['ldap_enabled'] = true
+      gitlab_rails['ldap_servers'] = YAML.load <<-'EOS'
           main:
             label: 'LDAP'
             host: ldap
@@ -129,24 +129,24 @@ services:
         EOS
 
 
-   sensu-uchiwa:
-     container_name: sensu-uchiwa
-     restart: always
-     image: sstarcher/uchiwa:0.15.0
-     networks:
-       - adopnetwork
-     environment:
-       - "constraint:tier==private"
-       - "SENSU_HOSTNAME=sensu-api"
-       - "SENSU_DC_NAME=Sensu"
-     expose:
-       - "3000"
+  sensu-uchiwa:
+    container_name: sensu-uchiwa
+    restart: always
+    image: sstarcher/uchiwa:0.15.0
+    networks:
+      - adopnetwork
+    environment:
+      - "constraint:tier==private"
+      - "SENSU_HOSTNAME=sensu-api"
+      - "SENSU_DC_NAME=Sensu"
+    expose:
+      - "3000"
 
-   sensu-api:
-     container_name: sensu-api
-     restart: always
-     image: avsdeveng/sensu:0.2.0
-     networks:
+  sensu-api:
+    container_name: sensu-api
+    restart: always
+    image: avsdeveng/sensu:0.2.0
+    networks:
       - adopnetwork
     command: api
     expose:
