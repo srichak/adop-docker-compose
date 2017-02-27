@@ -126,7 +126,7 @@ services:
            allow_username_or_email_login: false
            block_auto_created_users: false
            base: '${LDAP_FULL_DOMAIN}'
-      EOS
+       EOS
 
 
   sensu-uchiwa:
