@@ -96,7 +96,7 @@ services:
     environment:
       "constraint:tier": "=public"
       "affinity:container": "=gitlab-redis"
-      GITLAB_ROOT_PASSWORD: ${GITLAB_ROOT_PASSWORD}
+      GITLAB_ROOT_PASSWORD: ${GITLAB_ROOT_PASSWORD} 
       GITLAB_OMNIBUS_CONFIG: |
        external_url 'http://${TARGET_HOST}/gitlab'
        postgresql['enable'] = false
@@ -127,7 +127,6 @@ services:
            block_auto_created_users: false
            base: '${LDAP_FULL_DOMAIN}'
        EOS
-
 
   sensu-uchiwa:
     container_name: sensu-uchiwa
