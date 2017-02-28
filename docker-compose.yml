@@ -35,7 +35,7 @@ services:
 #      - selenium-hub
     environment:
       - "constraint:tier==public"
-#      - "constraint:node==test-avsdeveng-proxy"
+      - "constraint:node==test-avsdeveng-proxy"
       - "LDAP_SERVER=${LDAP_SERVER}"
       - "LDAP_USERNAME=${LDAP_ADMIN},${LDAP_FULL_DOMAIN}"
       - "LDAP_PASSWORD=${LDAP_PWD}"
