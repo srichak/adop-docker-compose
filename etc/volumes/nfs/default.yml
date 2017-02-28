@@ -5,7 +5,7 @@ services:
   proxy:
      volumes:
        - /data/temp/nginx_config:/etc/nginx
-       - /datai/temp/nginx_releasenote:/usr/share/nginx/html
+       - /data/temp/nginx_releasenote:/usr/share/nginx/html
 
   ldap:
     volumes:
