@@ -33,7 +33,7 @@ services:
 #      - ldap-ltb
 #      - ldap-phpadmin
 #      - selenium-hub
-    environment:docker
+    environment:
       - "constraint:tier==public"
       - "constraint:node==test-avsdeveng-proxy"
       - "LDAP_SERVER=${LDAP_SERVER}"
