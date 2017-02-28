@@ -13,7 +13,8 @@ services:
   proxy:
     container_name: proxy
     restart: always
-    image: nginx
+#    image: nginx
+    image: h3nrik/registry-ldap-auth
      #    build: ./adop-nginx/
     networks:
       - adopnetwork
