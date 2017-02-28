@@ -24,8 +24,8 @@ services:
       - "80"
       - "81"
     volumes:
-      - /data/tmp/nginx_config:/etc/nginx
-      - /data/tmp/nginx_releasenote:/usr/share/nginx/html
+      - /data/temp/nginx_config:/etc/nginx
+      - /data/temp/nginx_releasenote:/usr/share/nginx/html
 #    depends_on:
 #      - gitlab
 #      - jenkins
