@@ -13,7 +13,7 @@ services:
   proxy:
     container_name: proxy
     restart: always
-    image: avsdeveng/nginx:0.0.19
+    image: nginx
      #    build: ./adop-nginx/
     networks:
       - adopnetwork
@@ -23,6 +23,9 @@ services:
     expose: 
       - "80"
       - "81"
+    volumes:
+      - /data/tmp/nginx_config:/etc/nginx
+      - /data/tmp/nginx_releasenote:/usr/share/nginx/html
 #    depends_on:
 #      - gitlab
 #      - jenkins
@@ -33,15 +36,15 @@ services:
 #      - ldap-ltb
 #      - ldap-phpadmin
 #      - selenium-hub
-    environment:
-      - "constraint:tier==public"
-      - "LDAP_SERVER=${LDAP_SERVER}"
-      - "LDAP_USERNAME=${LDAP_ADMIN},${LDAP_FULL_DOMAIN}"
-      - "LDAP_PASSWORD=${LDAP_PWD}"
-      - "LDAP_USER_BASE_DN=${LDAP_USER_BASE_DN},${LDAP_FULL_DOMAIN}"
-      - "LDAP_GROUP_ATTRIBUTE=member"
-      - "LDAP_USER_ID_ATTRIBUTE=cn"
-      - "LDAP_USER_OBJECT_CLASS=inetOrgPerson"
+    # environment:
+    #   - "constraint:tier==public"
+    #   - "LDAP_SERVER=${LDAP_SERVER}"
+    #   - "LDAP_USERNAME=${LDAP_ADMIN},${LDAP_FULL_DOMAIN}"
+    #   - "LDAP_PASSWORD=${LDAP_PWD}"
+    #   - "LDAP_USER_BASE_DN=${LDAP_USER_BASE_DN},${LDAP_FULL_DOMAIN}"
+    #   - "LDAP_GROUP_ATTRIBUTE=member"
+    #   - "LDAP_USER_ID_ATTRIBUTE=cn"
+    #   - "LDAP_USER_OBJECT_CLASS=inetOrgPerson"
 #    logging:
 #      driver: syslog
 #      options:
