@@ -9,44 +9,44 @@ networks:
     external:
       name: ${CUSTOM_NETWORK_NAME}
 
-# services:
-#   proxy:
-#     container_name: proxy
-#     restart: always
-#     image: avsdeveng/nginx:0.0.19
-#      #    build: ./adop-nginx/
-#     networks:
-#       - adopnetwork
-#     ports:
-#       - "80:80"
-#       - "81:81"
-#     expose: 
-#       - "80"
-#       - "81"
-# #    depends_on:
-# #      - gitlab
-# #      - jenkins
-# #      - sonar
-# #      - nexus
-# #      - ldap
-# #      - sensu-uchiwa
-# #      - ldap-ltb
-# #      - ldap-phpadmin
-# #      - selenium-hub
-#     environment:
-#       - "constraint:tier==public"
-#       - "LDAP_SERVER=${LDAP_SERVER}"
-#       - "LDAP_USERNAME=${LDAP_ADMIN},${LDAP_FULL_DOMAIN}"
-#       - "LDAP_PASSWORD=${LDAP_PWD}"
-#       - "LDAP_USER_BASE_DN=${LDAP_USER_BASE_DN},${LDAP_FULL_DOMAIN}"
-#       - "LDAP_GROUP_ATTRIBUTE=member"
-#       - "LDAP_USER_ID_ATTRIBUTE=cn"
-#       - "LDAP_USER_OBJECT_CLASS=inetOrgPerson"
-# #    logging:
-# #      driver: syslog
-# #      options:
-# #        syslog-address: "tcp://logstash:5000"
-# #
+services:
+  proxy:
+    container_name: proxy
+    restart: always
+    image: h3nrik/registry-ldap-auth
+     #    build: ./adop-nginx/
+    networks:
+      - adopnetwork
+    ports:
+      - "80:80"
+      - "81:81"
+    expose: 
+      - "80"
+      - "81"
+#    depends_on:
+#      - gitlab
+#      - jenkins
+#      - sonar
+#      - nexus
+#      - ldap
+#      - sensu-uchiwa
+#      - ldap-ltb
+#      - ldap-phpadmin
+#      - selenium-hub
+    environment:
+      - "constraint:tier==public"
+      - "LDAP_SERVER=${LDAP_SERVER}"
+      - "LDAP_USERNAME=${LDAP_ADMIN},${LDAP_FULL_DOMAIN}"
+      - "LDAP_PASSWORD=${LDAP_PWD}"
+      - "LDAP_USER_BASE_DN=${LDAP_USER_BASE_DN},${LDAP_FULL_DOMAIN}"
+      - "LDAP_GROUP_ATTRIBUTE=member"
+      - "LDAP_USER_ID_ATTRIBUTE=cn"
+      - "LDAP_USER_OBJECT_CLASS=inetOrgPerson"
+#    logging:
+#      driver: syslog
+#      options:
+#        syslog-address: "tcp://logstash:5000"
+#
   ldap:
     container_name: ldap
     restart: always

@@ -2,10 +2,10 @@
 version: "2"
 
 services:
-  # proxy:
-  #   volumes:
-  #     - /data/nginx_config:/etc/nginx
-  #     - /data/nginx_releasenote:/usr/share/nginx/html
+  proxy:
+     volumes:
+       - /data/temp/nginx_config:/etc/nginx
+       - /datai/temp/nginx_releasenote:/usr/share/nginx/html
 
   ldap:
     volumes:
