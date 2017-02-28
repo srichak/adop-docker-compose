@@ -20,6 +20,9 @@ services:
     ports:
       - "80:80"
       - "81:81"
+    expose: 
+      - "80"
+      - "81"
 #    depends_on:
 #      - gitlab
 #      - jenkins
