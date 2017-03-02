@@ -25,10 +25,12 @@ services:
   sensu-api:
     volumes:
       - /data/sensu_api_conf:/etc/sensu/conf.d
+      - /data/sensu_api_check:/etc/sensu/check.d
 
   sensu-server:
     volumes:
       - /data/sensu_server_conf:/etc/sensu/conf.d
+      - /data/sensu_server_check:/etc/sensu/check.d
 
   sensu-client:
     volumes:

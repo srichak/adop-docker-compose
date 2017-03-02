@@ -35,7 +35,7 @@ services:
 #      - selenium-hub
     environment:
       - "constraint:tier==public"
-      - "constraint:node==test-avsdeveng-proxy"
+      # - "constraint:node==test-avsdeveng-proxy"
       - "LDAP_SERVER=${LDAP_SERVER}"
       - "LDAP_USERNAME=${LDAP_ADMIN},${LDAP_FULL_DOMAIN}"
       - "LDAP_PASSWORD=${LDAP_PWD}"
@@ -140,6 +140,7 @@ services:
       - adopnetwork
     environment:
       - "constraint:tier==private"
+      - "TRANSPORT_NAME=rabbitmq"
       - "SENSU_HOSTNAME=sensu-api"
       - "SENSU_DC_NAME=Sensu"
     expose:
@@ -148,7 +149,7 @@ services:
   sensu-api:
     container_name: sensu-api
     restart: always
-    image: avsdeveng/sensu:0.2.0
+    image: accenture/adop-sensu:0.2.0
     networks:
       - adopnetwork
     command: api
@@ -156,19 +157,20 @@ services:
       - "4567"
     environment:
       - "constraint:tier==private"
+      - "TRANSPORT_NAME=rabbitmq"
       - "RABBITMQ_HOST=sensu-rabbitmq"
       - "REDIS_HOST=sensu-redis"
 
   sensu-server:
     container_name: sensu-server
     restart: always
-    image: avsdeveng/sensu:0.2.0
+    image: accenture/adop-sensu:0.2.0
     networks:
       - adopnetwork
     command: server
     environment:
       - "constraint:tier==private"
-      - "CLIENT_NAME=core"
+      - "TRANSPORT_NAME=rabbitmq"
       - "API_HOST=sensu-api"
       - "RABBITMQ_HOST=sensu-rabbitmq"
       - "REDIS_HOST=sensu-redis"
@@ -177,21 +179,19 @@ services:
     container_name: sensu-client
     restart: always
 #    image: avsdeveng/sensu:0.2.0
-    image: avsdeveng/sensu:latest
+    image: accenture/adop-sensu:0.2.0
     networks:
       - adopnetwork
     command: client
     environment:
       - "constraint:tier==private"
+      - "TRANSPORT_NAME=rabbitmq"
       - "CLIENT_NAME=core"
+      - "API_HOST=sensu-api"
       - "RABBITMQ_HOST=sensu-rabbitmq"
-#      - "RABBITMQ_HOST=10.0.0.14"
       - "JENKINS_PREFIX=jenkins"
       - "CLIENT_SUBSCRIPTIONS=proxy,gerrit,jenkins,nexus,sonarqube,sensu,kibana"
-#      - "CLIENT_SUBSCRIPTIONS=10.0.0.27"
       - "CLIENT_ADDRESS=sensu-client"
-#      - "CLIENT_ADDRESS=10.0.0.9"
-      - "RABBITMQ_PORT=5671"
 
   sensu-rabbitmq:
     container_name: sensu-rabbitmq
@@ -410,20 +410,20 @@ services:
 # # #     options:
 # # #       syslog-address: "tcp://logstash:5000"
 #
-  selenium-hub:
-    container_name: selenium-hub
-    restart: always
-    image: selenium/hub:3.0.1-aluminum
-    #image: avsdeveng/selenium-hub:0.0.2
-    networks:
-      - adopnetwork
-    expose:
-    - "4444"
-    ports:
-    - "4444:4444"
-    environment:
-      - "constraint:tier==private"
-      - "SE_OPTS=-host selenium-hub"
+  # selenium-hub:
+  #   container_name: selenium-hub
+  #   restart: always
+  #   image: selenium/hub:3.0.1-aluminum
+  #   #image: avsdeveng/selenium-hub:0.0.2
+  #   networks:
+  #     - adopnetwork
+  #   expose:
+  #   - "4444"
+  #   ports:
+  #   - "4444:4444"
+  #   environment:
+  #     - "constraint:tier==private"
+  #     - "SE_OPTS=-host selenium-hub"
 #    logging:
 #      driver: "syslog"
 #      options:
