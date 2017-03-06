@@ -257,7 +257,7 @@ services:
       - "50000:50000"
     privileged: true
     environment:
-      - "constraint:node==test-avsdeveng-proxy"
+      - "constraint:node==test-avsdeveng-jenkins-a"
       - "JENKINS_OPTS=--prefix=/jenkins"
 
 
