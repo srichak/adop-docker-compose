@@ -43,11 +43,7 @@ services:
       - "LDAP_GROUP_ATTRIBUTE=member"
       - "LDAP_USER_ID_ATTRIBUTE=cn"
       - "LDAP_USER_OBJECT_CLASS=inetOrgPerson"
-#    logging:
-#      driver: syslog
-#      options:
-#        syslog-address: "tcp://logstash:5000"
-#
+
   ldap:
     container_name: ldap
     restart: always
@@ -140,9 +136,10 @@ services:
       - adopnetwork
     environment:
       - "constraint:tier==private"
-      - "TRANSPORT_NAME=rabbitmq"
+      - "TRANSPORT_NAME=redis"
       - "SENSU_HOSTNAME=sensu-api"
       - "SENSU_DC_NAME=Sensu"
+      - "REDIS_HOST=sensu-redis"
     expose:
       - "3000"
 
@@ -157,8 +154,8 @@ services:
       - "4567"
     environment:
       - "constraint:tier==private"
-      - "TRANSPORT_NAME=rabbitmq"
-      - "RABBITMQ_HOST=sensu-rabbitmq"
+      - "TRANSPORT_NAME=redis"
+      # - "RABBITMQ_HOST=sensu-rabbitmq"
       - "REDIS_HOST=sensu-redis"
 
   sensu-server:
@@ -170,9 +167,9 @@ services:
     command: server
     environment:
       - "constraint:tier==private"
-      - "TRANSPORT_NAME=rabbitmq"
+      - "TRANSPORT_NAME=redis"
       - "API_HOST=sensu-api"
-      - "RABBITMQ_HOST=sensu-rabbitmq"
+      # - "RABBITMQ_HOST=sensu-rabbitmq"
       - "REDIS_HOST=sensu-redis"
 
   sensu-client:
@@ -185,27 +182,28 @@ services:
     command: client
     environment:
       - "constraint:tier==private"
-      - "TRANSPORT_NAME=rabbitmq"
+      - "TRANSPORT_NAME=redis"
+      - "REDIS_HOST=sensu-redis"
       - "CLIENT_NAME=core"
       - "API_HOST=sensu-api"
-      - "RABBITMQ_HOST=sensu-rabbitmq"
+      # - "RABBITMQ_HOST=sensu-rabbitmq"
       - "JENKINS_PREFIX=jenkins"
       - "CLIENT_SUBSCRIPTIONS=proxy,gerrit,jenkins,nexus,sonarqube,sensu,kibana"
       - "CLIENT_ADDRESS=sensu-client"
 
-  sensu-rabbitmq:
-    container_name: sensu-rabbitmq
-    restart: always
-    image: rabbitmq:3.5.7-management
-    networks:
-      - adopnetwork
-    expose:
-      - "5672"
-      - "5671"
-      - "15672"
-      - "15671"
-    environment:
-      - "constraint:tier==private"
+  # sensu-rabbitmq:
+  #   container_name: sensu-rabbitmq
+  #   restart: always
+  #   image: rabbitmq:3.5.7-management
+  #   networks:
+  #     - adopnetwork
+  #   expose:
+  #     - "5672"
+  #     - "5671"
+  #     - "15672"
+  #     - "15671"
+  #   environment:
+  #     - "constraint:tier==private"
 
   sensu-redis:
     container_name: sensu-redis
