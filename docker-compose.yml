@@ -245,7 +245,7 @@ services:
   jenkins:
     container_name: jenkins
     restart: always
-    image: avsdeveng/jenkins:0.2.2
+    image: jenkins
     #build: ../images/docker-jenkins/
     networks:
       - adopnetwork
