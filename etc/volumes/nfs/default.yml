@@ -25,20 +25,16 @@ services:
   sensu-api:
     volumes:
       - /data/sensu_api_conf:/etc/sensu/conf.d
-      - /data/sensu_api_check:/etc/sensu/check.d
+      - /data/sensu_checks:/etc/sensu/check.d
 
   sensu-server:
     volumes:
       - /data/sensu_server_conf:/etc/sensu/conf.d
-      - /data/sensu_server_check:/etc/sensu/check.d
+      - /data/sensu_checks:/etc/sensu/check.d
 
   sensu-client:
     volumes:
       - /data/sensu_client_conf:/etc/sensu/conf.d
-
-  # sensu-rabbitmq:
-  #   volumes:
-  #     - /data/sensu_rabbitmq_data:/var/lib/rabbitmq
 
   sensu-redis:
     volumes:
