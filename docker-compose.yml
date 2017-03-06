@@ -242,6 +242,25 @@ services:
       - "SONARQUBE_JDBC_URL=jdbc:mysql://${SONAR_RDS_DB_URL}:${SONAR_RDS_DB_PORT}/${SONAR_MYSQL_DATABASE}?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true"
       - "SONARQUBE_JDBC_PASSWORD=${SONARQUBE_JDBC_PASSWORD}"
       - "SONAR_RDS_ENABLED=${SONAR_RDS_ENABLED}"
+   jenkins:
+     container_name: jenkins
+     restart: always
+     image: avsdeveng/jenkins:0.2.2
+     #build: ../images/docker-jenkins/
+     networks:
+       - adopnetwork
+     expose:
+       - "8080"
+       - "50000"
+     ports:
+       - "8080:8080"
+       - "50000:50000"
+     privileged: true
+     environment:
+       - "constraint:node==test-avsdeveng-proxy"
+       - "JENKINS_OPTS=--prefix=/jenkins"
+     volumes:
+       - /data//temp/jenkins:/var/jenkins_home
 
 # # TODO cleanup jenkins environment variables for GitLab
 #   jenkins:
