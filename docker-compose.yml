@@ -35,7 +35,6 @@ services:
 #      - selenium-hub
     environment:
       - "constraint:tier==public"
-      # - "constraint:node==test-avsdeveng-proxy"
       - "LDAP_SERVER=${LDAP_SERVER}"
       - "LDAP_USERNAME=${LDAP_ADMIN},${LDAP_FULL_DOMAIN}"
       - "LDAP_PASSWORD=${LDAP_PWD}"
@@ -136,7 +135,7 @@ services:
       - adopnetwork
     environment:
       - "constraint:tier==private"
-      - "TRANSPORT_NAME=redis"
+    #  - "TRANSPORT_NAME=redis"
       - "SENSU_HOSTNAME=sensu-api"
       - "SENSU_DC_NAME=Sensu"
       - "REDIS_HOST=sensu-redis"
@@ -154,7 +153,7 @@ services:
       - "4567"
     environment:
       - "constraint:tier==private"
-      - "TRANSPORT_NAME=redis"
+    #  - "TRANSPORT_NAME=redis"
       # - "RABBITMQ_HOST=sensu-rabbitmq"
       - "REDIS_HOST=sensu-redis"
 
@@ -167,7 +166,7 @@ services:
     command: server
     environment:
       - "constraint:tier==private"
-      - "TRANSPORT_NAME=redis"
+   #   - "TRANSPORT_NAME=redis"
       - "API_HOST=sensu-api"
       # - "RABBITMQ_HOST=sensu-rabbitmq"
       - "REDIS_HOST=sensu-redis"
@@ -182,7 +181,7 @@ services:
     command: client
     environment:
       - "constraint:tier==private"
-      - "TRANSPORT_NAME=redis"
+    #  - "TRANSPORT_NAME=redis"
       - "REDIS_HOST=sensu-redis"
       - "CLIENT_NAME=core"
       - "API_HOST=sensu-api"
