@@ -26,11 +26,13 @@ services:
     volumes:
       - /data/sensu_api_conf:/etc/sensu/conf.d
       - /data/sensu_checks:/etc/sensu/check.d
+      - /data/sensu_handlers:/etc/sensu/handlers
 
   sensu-server:
     volumes:
       - /data/sensu_server_conf:/etc/sensu/conf.d
       - /data/sensu_checks:/etc/sensu/check.d
+      - /data/sensu_handlers:/etc/sensu/handlers
 
   sensu-client:
     volumes:
