@@ -188,7 +188,7 @@ services:
       - "CLIENT_NAME=core"
       - "API_HOST=sensu-api"
       # - "RABBITMQ_HOST=sensu-rabbitmq"
-#      - "JENKINS_PREFIX=jenkins"
+      # - "JENKINS_PREFIX=jenkins"
       - "CLIENT_SUBSCRIPTIONS=proxy,gitlab,jenkins,nexus,sonarqube,sensu,kibana"
       - "CLIENT_ADDRESS=sensu-client"
 
@@ -244,6 +244,7 @@ services:
       - "SONARQUBE_JDBC_URL=jdbc:mysql://${SONAR_RDS_DB_URL}:${SONAR_RDS_DB_PORT}/${SONAR_MYSQL_DATABASE}?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true"
       - "SONARQUBE_JDBC_PASSWORD=${SONARQUBE_JDBC_PASSWORD}"
       - "SONAR_RDS_ENABLED=${SONAR_RDS_ENABLED}"
+
   jenkins:
     container_name: jenkins
     restart: always
@@ -257,7 +258,7 @@ services:
     ports:
       - "8080:8080"
       - "50000:50000"
-    privileged: true
+#    privileged: true
     environment:
       - "constraint:node==test-avsdeveng-jenkins-a"
 #      - "JENKINS_OPTS=--prefix=/jenkins"
