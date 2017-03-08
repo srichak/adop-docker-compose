@@ -188,7 +188,7 @@ services:
       - "CLIENT_NAME=core"
       - "API_HOST=sensu-api"
       # - "RABBITMQ_HOST=sensu-rabbitmq"
-      - "JENKINS_PREFIX=jenkins"
+#      - "JENKINS_PREFIX=jenkins"
       - "CLIENT_SUBSCRIPTIONS=proxy,gitlab,jenkins,nexus,sonarqube,sensu,kibana"
       - "CLIENT_ADDRESS=sensu-client"
 
