@@ -183,6 +183,7 @@ services:
       - "JENKINS_PREFIX=jenkins"
       - "CLIENT_SUBSCRIPTIONS=proxy,gitlab,jenkins,nexus,sonarqube,sensu,kibana"
       - "CLIENT_ADDRESS=sensu-client"
+      - "REDIS_HOST=sensu-redis"
 
   sensu-redis:
     container_name: sensu-redis
