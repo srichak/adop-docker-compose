@@ -138,13 +138,14 @@ services:
       - "constraint:tier==private"
       - "SENSU_HOSTNAME=sensu-api"
       - "SENSU_DC_NAME=Sensu"
+      - "REDIS_HOST=sensu-redis" 
     expose:
       - "3000"
 
   sensu-api:
     container_name: sensu-api
     restart: always
-    image: avsdeveng/sensu:0.2.0
+    image: accenture/adop-sensu:0.2.0
     networks:
       - adopnetwork
     command: api
@@ -152,56 +153,36 @@ services:
       - "4567"
     environment:
       - "constraint:tier==private"
-      - "RABBITMQ_HOST=sensu-rabbitmq"
       - "REDIS_HOST=sensu-redis"
 
   sensu-server:
     container_name: sensu-server
     restart: always
-    image: avsdeveng/sensu:0.2.0
+    image: accenture/adop-sensu:0.2.0
     networks:
       - adopnetwork
     command: server
     environment:
       - "constraint:tier==private"
-      - "CLIENT_NAME=core"
       - "API_HOST=sensu-api"
-      - "RABBITMQ_HOST=sensu-rabbitmq"
       - "REDIS_HOST=sensu-redis"
+      - "SPLUNK_URL=https://splunk.dcsc.accenture.com/services/collector/event"
+      - "SPLUNK_KEY=F8700042-28AA-467F-BBAE-BA4894556888"
 
   sensu-client:
     container_name: sensu-client
     restart: always
-#    image: avsdeveng/sensu:0.2.0
-    image: avsdeveng/sensu:latest
+    image: accenture/adop-sensu:0.2.0
     networks:
       - adopnetwork
     command: client
     environment:
       - "constraint:tier==private"
       - "CLIENT_NAME=core"
-      - "RABBITMQ_HOST=sensu-rabbitmq"
-#      - "RABBITMQ_HOST=10.0.0.14"
+      - "API_HOST=sensu-api"
       - "JENKINS_PREFIX=jenkins"
-      - "CLIENT_SUBSCRIPTIONS=proxy,gerrit,jenkins,nexus,sonarqube,sensu,kibana"
-#      - "CLIENT_SUBSCRIPTIONS=10.0.0.27"
+      - "CLIENT_SUBSCRIPTIONS=proxy,gitlab,jenkins,nexus,sonarqube,sensu,kibana"
       - "CLIENT_ADDRESS=sensu-client"
-#      - "CLIENT_ADDRESS=10.0.0.9"
-      - "RABBITMQ_PORT=5671"
-
-  sensu-rabbitmq:
-    container_name: sensu-rabbitmq
-    restart: always
-    image: rabbitmq:3.5.7-management
-    networks:
-      - adopnetwork
-    expose:
-      - "5672"
-      - "5671"
-      - "15672"
-      - "15671"
-    environment:
-      - "constraint:tier==private"
 
   sensu-redis:
     container_name: sensu-redis
