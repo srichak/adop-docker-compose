@@ -6,6 +6,7 @@ services:
      volumes:
        - /data/temp/nginx_config:/etc/nginx
        - /data/temp/nginx_releasenote:/usr/share/nginx/html
+       - /data/nginx_log/error.log:/var/log/nginx/error.log
 
   ldap:
     volumes:
