@@ -49,10 +49,10 @@ services:
       - /data/sonar_extensions:/opt/sonarqube/extensions
       - /data/sonar_logs:/opt/sonarqube/logs
 
-  jenkins:
-    user: root
-    volumes:
-      - /data/jenkins_home:/var/jenkins_home
+  # jenkins:
+  #   user: root
+  #   volumes:
+  #     - /data/jenkins_home:/var/jenkins_home
 
   jenkins-slave-java:
     volumes:
