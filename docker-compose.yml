@@ -553,8 +553,6 @@ services:
     container_name: fail2banana
     restart: always
     image: avsdeveng/fail2ban
-    networks:
-      - adopnetwork
     privileged: true
     network_mode: host
     environment:
