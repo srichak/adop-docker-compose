@@ -89,3 +89,5 @@ services:
   fail2banana:
     volumes:
       - /data/nginx_log/error.log:/var/log/nginx/error.log
+      - /data/fail2ban/filter.d:/etc/fail2ban/filter.d
+      - /data/fail2ban/jail.local:/etc/fail2ban/jail.local
