@@ -6,6 +6,7 @@ services:
     volumes:
       - /data/nginx_config:/etc/nginx
       - /data/nginx_releasenote:/usr/share/nginx/html
+      - /data/nginx_log/error.log:/var/log/nginx/error.log
 
   ldap:
     volumes:
@@ -49,14 +50,14 @@ services:
       - /data/sonar_logs:/opt/sonarqube/logs
 
   jenkins:
-    user: root 
+    user: root
     volumes:
-      - /data/jenkins_home:/var/jenkins_home 
+      - /data/jenkins_home:/var/jenkins_home
 
   jenkins-slave-java:
     volumes:
       - ${SLAVE_MOUNT_PATH_JAVA}:/workspace
-        
+
   jenkins-slave-node:
     volumes:
       - ${SLAVE_MOUNT_PATH_NODE}:/workspace
@@ -84,3 +85,7 @@ services:
   openvpn:
     volumes:
       - /data/openvpn:/etc/openvpn
+
+  fail2banana:
+    volumes:
+      - /data/nginx_log/error.log:/var/log/nginx/error.log
