@@ -308,7 +308,7 @@ services:
       - adopnetwork
     privileged: true
     environment:
-      - "constraint:tier==jenkins"
+  #    - "constraint:tier==jenkins"
       - "SLAVE_LABELS=aws ldap java7 docker"
       - "SLAVE_NAME=SLAVE_JAVA"
       - "SWARM_PASSWORD=${PASSWORD_JENKINS}"
@@ -325,7 +325,7 @@ services:
       - adopnetwork
     privileged: true
     environment:
-      - "constraint:tier==jenkins"
+#      - "constraint:tier==jenkins"
       - "SLAVE_NAME=SLAVE_NODE_591"
       - "SLAVE_LABELS=nodejs nodejs_5_9_1"
       - "SWARM_MASTER=http://jenkins:8080/jenkins/"
@@ -344,7 +344,7 @@ services:
       - adopnetwork
     privileged: true
     environment:
-      - "constraint:tier==jenkins"
+#      - "constraint:tier==jenkins"
       - "SLAVE_NAME=SLAVE_NODE_447"
       - "SLAVE_LABELS=nodejs nodejs_4_4_7"
       - "SWARM_MASTER=http://jenkins:8080/jenkins/"
@@ -363,7 +363,7 @@ services:
       - adopnetwork
     privileged: true
     environment:
-      - "constraint:tier==jenkins"
+  #    - "constraint:tier==jenkins"
       - "SLAVE_LABELS=aws ldap java8 ansible terraform packer docker"
       - "SWARM_MASTER=http://jenkins:8080/jenkins/"
       - "SLAVE_NAME=SLAVE_ANSIBLE"
