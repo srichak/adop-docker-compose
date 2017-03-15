@@ -50,7 +50,8 @@ services:
 
   logstash:
     volumes:
-      - /etc/logstash/conf.d/:/data/logstash_conf
+      - /data/logstash_conf/:/etc/logstash/conf.d/
+      - /data/logstash_logs/:/var/log/logstash/
 
   jenkins:
     user: root
