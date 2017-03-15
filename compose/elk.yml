@@ -35,6 +35,10 @@ services:
       - "12201:12201/udp"
       - "25826:25826/udp"
       - "5000:5000/tcp"
+    volumes:
+      - /data/logstash_conf:/etc/logstash/conf.d
+      - /data/logstash_logs:/var/log/logstash
+
 
   kibana:
     container_name: kibana
