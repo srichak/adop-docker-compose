@@ -48,11 +48,6 @@ services:
       - /data/sonar_extensions:/opt/sonarqube/extensions
       - /data/sonar_logs:/opt/sonarqube/logs
 
-  logstash:
-    volumes:
-      - /data/logstash_conf/:/etc/logstash/conf.d/
-      - /data/logstash_logs/:/var/log/logstash/
-
   jenkins:
     user: root
     volumes:
