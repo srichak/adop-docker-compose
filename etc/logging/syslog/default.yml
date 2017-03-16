@@ -24,7 +24,7 @@ services:
       options:
         syslog-address: "udp://${LOGSTASH_HOST}:25826"
         tag: "gitlab"
-  
+
   gitlab-redis:
     logging:
       driver: "syslog"

@@ -4,8 +4,8 @@ version: "2"
 services:
   proxy:
      volumes:
-       - /data/temp/nginx_config:/etc/nginx
-       - /data/temp/nginx_releasenote:/usr/share/nginx/html
+       - /data/nginx_config:/etc/nginx
+       - /data/nginx_releasenote:/usr/share/nginx/html
 
   ldap:
     volumes:
@@ -51,7 +51,7 @@ services:
   jenkins:
     user: root
     volumes:
-       - /data//temp/jenkins:/var/jenkins_home
+       - /data/jenkins_home:/var/jenkins_home
 #
 # #   jenkins-slave-java:
 #     volumes:
