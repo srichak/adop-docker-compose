@@ -245,6 +245,20 @@ services:
       - "SONARQUBE_JDBC_PASSWORD=${SONARQUBE_JDBC_PASSWORD}"
       - "SONAR_RDS_ENABLED=${SONAR_RDS_ENABLED}"
 
+  kpi-reporter:
+    container_name: kpi-reporter
+    restart: always
+    image: dockerhub.accenture.com/kpi/sensu-client-discovery:1.1.0
+    networks:
+      - adopnetwork
+    mem_limit: 512m
+    environment:
+      - "constraint:tier==private"
+      - "SENSU_URL=sensu-uchiwa:3000"
+      - "SPLUNK_URL=http://logstash:5000"
+      - "SPLUNK_KEY=F8700042-28AA-467F-BBAE-BA4894556888"
+      - "CLIENT=New-AVS"
+
   jenkins:
     container_name: jenkins
     restart: always
