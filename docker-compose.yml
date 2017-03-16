@@ -224,6 +224,20 @@ services:
       - "SONARQUBE_JDBC_PASSWORD=${SONARQUBE_JDBC_PASSWORD}"
       - "SONAR_RDS_ENABLED=${SONAR_RDS_ENABLED}"
 
+  kpi-reporter:
+    container_name: kpi-reporter
+    restart: always
+    image: dockerhub.accenture.com/kpi/sensu-client-discovery:1.1.0
+    networks:
+      - adopnetwork
+    mem_limit: 1024m
+    environment:
+      - "constraint:tier==private"
+      - "SENSU_URL=sensu-uchiwa:3000"
+      - "SPLUNK_URL=http://logstash:5000"
+      - "SPLUNK_KEY=F8700042-28AA-467F-BBAE-BA4894556888"
+      - "CLIENT=New-AVS"
+
 # TODO cleanup jenkins environment variables for GitLab
   jenkins:
     container_name: jenkins
@@ -403,10 +417,6 @@ services:
     environment:
       - "constraint:tier==private"
       - "SE_OPTS=-host selenium-hub"
-#    logging:
-#      driver: "syslog"
-#      options:
-#        syslog-address: "tcp://logstash:5000"
 
 #  selenium-node-chrome:
 #    container_name: selenium-node-chrome
