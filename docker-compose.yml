@@ -258,6 +258,8 @@ services:
     ports:
       - "8080:8080"
       - "50000:50000"
+    logging:
+      driver: syslog
 #    privileged: true
     environment:
       - "constraint:node==test-avsdeveng-jenkins-a"
