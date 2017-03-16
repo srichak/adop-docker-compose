@@ -81,12 +81,12 @@ services:
         syslog-address: "udp://${LOGSTASH_HOST}:25826"
         tag: "sonar"
 
-  # jenkins:
-  #   logging:
-  #     driver: "syslog"
-  #     options:
-  #       syslog-address: "udp://${LOGSTASH_HOST}:25826"
-  #       tag: "jenkins"
+  jenkins:
+    logging:
+      driver: "syslog"
+      options:
+        syslog-address: "udp://${LOGSTASH_HOST}:25826"
+        tag: "jenkins"
 
   # jenkins-slave:
   #   logging:
