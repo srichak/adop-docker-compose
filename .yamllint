@@ -3,5 +3,6 @@
 extends: default
 
 rules:
-  line-length: 500
-  level: warning
+  line-length:
+    allow-non-breakable-words: true
+    level: warning
