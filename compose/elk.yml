@@ -1,3 +1,4 @@
+---
 version: "2"
 
 # set CUSTOM_NETWORK_NAME to the name of the custom Docker network
