@@ -40,3 +40,7 @@
 #   - yamllint compose/elk.yml
 #   - yamllint etc/volumes/nfs/default.yml
 #   - yamllint etc/logging/syslog/default.yml
+
+language: shell
+script:
+  - echo "Not implemented yet. Postponed" 
