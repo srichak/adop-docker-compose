@@ -236,7 +236,7 @@ services:
       - "SENSU_URL=sensu-uchiwa:3000"
       - "SPLUNK_URL=https://splunk.dcsc.accenture.com/services/collector/event"
       - "SPLUNK_KEY=F8700042-28AA-467F-BBAE-BA4894556888"
-      - "CLIENT=New-AVS"
+      - "CLIENT=AVS-New"
 
 # TODO cleanup jenkins environment variables for GitLab
   jenkins:
