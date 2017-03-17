@@ -3,7 +3,6 @@ version: "2"
 
 services:
 
-# set LOGSTASH_HOST to dns/ip of logstash host
   proxy:
     logging:
       driver: "syslog"
