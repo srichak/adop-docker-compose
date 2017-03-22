@@ -68,6 +68,14 @@ services:
         syslog-address: "udp://${LOGSTASH_HOST}:25826"
         tag: "sonar"
 
+  kpi-reporter:
+    logging:
+      driver: "syslog"
+      options:
+        syslog-address: "udp://${LOGSTASH_HOST}:25826"
+        tag: "kpi-reporter"
+
+
   # jenkins:
   #   logging:
   #     driver: "syslog"
