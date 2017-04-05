@@ -39,10 +39,6 @@ services:
       - "LDAP_GROUP_ATTRIBUTE=member"
       - "LDAP_USER_ID_ATTRIBUTE=cn"
       - "LDAP_USER_OBJECT_CLASS=inetOrgPerson"
-#    logging:
-#      driver: syslog
-#      options:
-#        syslog-address: "tcp://logstash:5000"
 
   ldap:
     container_name: ldap
@@ -51,10 +47,12 @@ services:
     image: avsdeveng/ldap:0.3.0
     networks:
       - adopnetwork
+    ports:
+      - "389:389"
     expose:
-      - "389"
+      - "389"      
     environment:
-      - "constraint:tier==private"
+      - "constraint:node==avsdeveng-Swarm-a"
       - "INITIAL_ADMIN_USER=${INITIAL_ADMIN_USER}"
       - "INITIAL_ADMIN_PASSWORD=${INITIAL_ADMIN_PASSWORD}"
       - "JENKINS_PASSWORD=${JENKINS_PWD}"
