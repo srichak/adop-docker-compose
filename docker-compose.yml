@@ -52,11 +52,13 @@ services:
     #image: avsdeveng/ldap:0.3.0
     networks:
       - adopnetwork
+    ports:
+      - "389:389"
     expose:
       - "389"
     environment:
 #      - "constraint:tier==private"
-      - "constraint:node==test-avsdeveng-Swarm-a"
+      - "constraint:node==avsdeveng-Swarm-a"
       - "INITIAL_ADMIN_USER=${INITIAL_ADMIN_USER}"
       - "INITIAL_ADMIN_PASSWORD=${INITIAL_ADMIN_PASSWORD}"
       - "JENKINS_PASSWORD=${JENKINS_PWD}"
