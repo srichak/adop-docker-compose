@@ -48,13 +48,15 @@ services:
     container_name: ldap
     restart: always
     #build: ../images/docker-ldap/
-    image: avsdeveng/ldap:0.3.0
+    image: accenture/adop-ldap:0.2.0
+    #image: avsdeveng/ldap:0.3.0
     networks:
       - adopnetwork
     expose:
       - "389"
     environment:
-      - "constraint:tier==private"
+#      - "constraint:tier==private"
+      - "constraint:node==test-avsdeveng-Swarm-a"
       - "INITIAL_ADMIN_USER=${INITIAL_ADMIN_USER}"
       - "INITIAL_ADMIN_PASSWORD=${INITIAL_ADMIN_PASSWORD}"
       - "JENKINS_PASSWORD=${JENKINS_PWD}"
@@ -62,6 +64,9 @@ services:
       - "SLAPD_PASSWORD=${LDAP_PWD}"
       - "SLAPD_DOMAIN=${LDAP_DOMAIN}"
       - "SLAPD_FULL_DOMAIN=${LDAP_FULL_DOMAIN}"
+      - "SLAPD_ADDITIONAL_MODULES=ppolicy"
+      - "SLAPD_ADDITIONAL_SCHEMAS=ppolicy"
+      - "SLAPD_ADDITIONAL_MODULES=memberof"
 
   gitlab-redis:
     container_name: gitlab-redis
@@ -499,7 +504,8 @@ services:
   ldap-ltb:
     container_name: ldap-ltb
     restart: always
-    image: avsdeveng/ldap-ltb:0.2.0
+    #image: avsdeveng/ldap-ltb:0.2.0
+    
     networks:
       - adopnetwork
     expose:
