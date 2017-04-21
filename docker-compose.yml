@@ -506,8 +506,7 @@ services:
   ldap-ltb:
     container_name: ldap-ltb
     restart: always
-    #image: avsdeveng/ldap-ltb:0.2.0
-    
+    image: avsdeveng/ldap-ltb:0.2.0    
     networks:
       - adopnetwork
     expose:
