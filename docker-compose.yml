@@ -13,23 +13,26 @@ services:
   proxy:
     container_name: proxy
     restart: always
-    image: avsdeveng/nginx:0.0.21
-    #    build: ./adop-nginx/
+    image: h3nrik/registry-ldap-auth
+     #    build: ./adop-nginx/
     networks:
       - adopnetwork
     ports:
       - "80:80"
       - "81:81"
-    depends_on:
-      - gitlab
-      - jenkins
-      - sonar
-      - nexus
-      - ldap
-      - sensu-uchiwa
-      - ldap-ltb
-      - ldap-phpadmin
-      - selenium-hub
+    expose:
+      - "80"
+      - "81"
+#    depends_on:
+#      - gitlab
+#      - jenkins
+#      - sonar
+#      - nexus
+#      - ldap
+#      - sensu-uchiwa
+#      - ldap-ltb
+#      - ldap-phpadmin
+#      - selenium-hub
     environment:
       - "constraint:tier==public"
       - "LDAP_SERVER=${LDAP_SERVER}"
@@ -39,22 +42,21 @@ services:
       - "LDAP_GROUP_ATTRIBUTE=member"
       - "LDAP_USER_ID_ATTRIBUTE=cn"
       - "LDAP_USER_OBJECT_CLASS=inetOrgPerson"
-#    logging:
-#      driver: syslog
-#      options:
-#        syslog-address: "tcp://logstash:5000"
 
   ldap:
     container_name: ldap
     restart: always
-    #build: ../images/docker-ldap/
+     #build: ../images/docker-ldap/
     image: avsdeveng/ldap:0.3.0
+     #image: accenture/adop-ldap:0.1.3
     networks:
       - adopnetwork
+    ports:
+      - "389:389"
     expose:
       - "389"
     environment:
-      - "constraint:tier==private"
+      - "constraint:node==test-avsdeveng-Swarm-a"
       - "INITIAL_ADMIN_USER=${INITIAL_ADMIN_USER}"
       - "INITIAL_ADMIN_PASSWORD=${INITIAL_ADMIN_PASSWORD}"
       - "JENKINS_PASSWORD=${JENKINS_PWD}"
@@ -95,7 +97,7 @@ services:
     environment:
       "constraint:tier": "=public"
       "affinity:container": "=gitlab-redis"
-      GITLAB_ROOT_PASSWORD: ${GITLAB_ROOT_PASSWORD} 
+      GITLAB_ROOT_PASSWORD: ${GITLAB_ROOT_PASSWORD}
       GITLAB_OMNIBUS_CONFIG: |
        external_url 'http://${TARGET_HOST}/gitlab'
        postgresql['enable'] = false
@@ -127,7 +129,6 @@ services:
            base: '${LDAP_FULL_DOMAIN}'
        EOS
 
-
   sensu-uchiwa:
     container_name: sensu-uchiwa
     restart: always
@@ -136,9 +137,10 @@ services:
       - adopnetwork
     environment:
       - "constraint:tier==private"
+    #  - "TRANSPORT_NAME=redis"
       - "SENSU_HOSTNAME=sensu-api"
       - "SENSU_DC_NAME=Sensu"
-      - "REDIS_HOST=sensu-redis" 
+      - "REDIS_HOST=sensu-redis"
     expose:
       - "3000"
 
@@ -153,6 +155,8 @@ services:
       - "4567"
     environment:
       - "constraint:tier==private"
+    #  - "TRANSPORT_NAME=redis"
+      # - "RABBITMQ_HOST=sensu-rabbitmq"
       - "REDIS_HOST=sensu-redis"
 
   sensu-server:
@@ -164,7 +168,9 @@ services:
     command: server
     environment:
       - "constraint:tier==private"
+   #   - "TRANSPORT_NAME=redis"
       - "API_HOST=sensu-api"
+      # - "RABBITMQ_HOST=sensu-rabbitmq"
       - "REDIS_HOST=sensu-redis"
       - "SPLUNK_URL=https://splunk.dcsc.accenture.com/services/collector/event"
       - "SPLUNK_KEY=F8700042-28AA-467F-BBAE-BA4894556888"
@@ -172,18 +178,35 @@ services:
   sensu-client:
     container_name: sensu-client
     restart: always
+#    image: avsdeveng/sensu:0.2.0
     image: accenture/adop-sensu:0.2.0
     networks:
       - adopnetwork
     command: client
     environment:
       - "constraint:tier==private"
+    #  - "TRANSPORT_NAME=redis"
+      - "REDIS_HOST=sensu-redis"
       - "CLIENT_NAME=core"
       - "API_HOST=sensu-api"
-      - "JENKINS_PREFIX=jenkins"
+      # - "RABBITMQ_HOST=sensu-rabbitmq"
+      # - "JENKINS_PREFIX=jenkins"
       - "CLIENT_SUBSCRIPTIONS=proxy,gitlab,jenkins,nexus,sonarqube,sensu,kibana"
       - "CLIENT_ADDRESS=sensu-client"
-      - "REDIS_HOST=sensu-redis"
+
+  # sensu-rabbitmq:
+  #   container_name: sensu-rabbitmq
+  #   restart: always
+  #   image: rabbitmq:3.5.7-management
+  #   networks:
+  #     - adopnetwork
+  #   expose:
+  #     - "5672"
+  #     - "5671"
+  #     - "15672"
+  #     - "15671"
+  #   environment:
+  #     - "constraint:tier==private"
 
   sensu-redis:
     container_name: sensu-redis
@@ -230,15 +253,14 @@ services:
     image: dockerhub.accenture.com/kpi/sensu-client-discovery:1.1.0
     networks:
       - adopnetwork
-    mem_limit: 1024m
+    mem_limit: 512m
     environment:
       - "constraint:tier==private"
       - "SENSU_URL=sensu-uchiwa:3000"
-      - "SPLUNK_URL=https://splunk.dcsc.accenture.com/services/collector/event"
+      - "SPLUNK_URL=http://logstash:5000"
       - "SPLUNK_KEY=F8700042-28AA-467F-BBAE-BA4894556888"
-      - "CLIENT=AVS-New"
+      - "CLIENT=New-AVS"
 
-# TODO cleanup jenkins environment variables for GitLab
   jenkins:
     container_name: jenkins
     restart: always
@@ -251,10 +273,10 @@ services:
       - "50000"
     ports:
       - "8080:8080"
-      - "50000:50000"  
-    privileged: true
+      - "50000:50000"
+#    privileged: true
     environment:
-      - "constraint:tier==jenkins"
+      - "constraint:node==test-avsdeveng-jenkins-a"
       - "ADOP_GERRIT_ENABLED=false"
       - "ADOP_PLATFORM_MANAGEMENT_VERSION=0.1.1"
       - "JENKINS_OPTS=--prefix=/jenkins"
@@ -295,128 +317,191 @@ services:
       - "DOCKER_HOST=${JENKINS_DOCKER_HOST}"
       - "DOCKER_CLIENT_CERT_PATH=${DOCKER_CLIENT_CERT_PATH}"
       - "DOCKER_NETWORK_NAME=adopnetwork"
+#      - "JENKINS_OPTS=--prefix=/jenkins"
 
-  jenkins-slave-java:
-    container_name: jenkins-slave-java
-    restart: always
-    image: avsdeveng/jenkins-slave:0.2.2
-    networks:
-      - adopnetwork
-    privileged: true
-    environment:
-      - "constraint:tier==jenkins"
-      - "SLAVE_LABELS=aws ldap java7 docker"
-      - "SLAVE_NAME=SLAVE_JAVA"
-      - "SWARM_PASSWORD=${PASSWORD_JENKINS}"
-      - "SLAVE_EXECUTORS=2"
-      - "INITIAL_ADMIN_USER=${INITIAL_ADMIN_USER}"
-      - "INITIAL_ADMIN_PASSWORD=${INITIAL_ADMIN_PASSWORD_PLAIN}"
-      - "SLAVE_MOUNT_PATH=${SLAVE_MOUNT_PATH_JAVA}"
 
-  jenkins-slave-node:
-    container_name: jenkins-slave-node
-    restart: always
-    image: avsdeveng/jenkins_slave_node5.9.1:0.0.1
-    networks:
-      - adopnetwork
-    privileged: true
-    environment:
-      - "constraint:tier==jenkins"
-      - "SLAVE_NAME=SLAVE_NODE_591"
-      - "SLAVE_LABELS=nodejs nodejs_5_9_1"
-      - "SWARM_MASTER=http://jenkins:8080/jenkins/"
-      - "SWARM_USER=jenkins"
-      - "SWARM_PASSWORD=${PASSWORD_JENKINS}"
-      - "SLAVE_EXECUTORS=${SLAVE_EXECUTORS}"
-      - "INITIAL_ADMIN_USER=${INITIAL_ADMIN_USER}"
-      - "INITIAL_ADMIN_PASSWORD=${INITIAL_ADMIN_PASSWORD_PLAIN}"
-      - "SLAVE_MOUNT_PATH=${SLAVE_MOUNT_PATH_NODE}"
-
-  jenkins-slave-node-4:
-    container_name: jenkins-slave-node-4
-    restart: always
-    image: avsdeveng/jenkins-slave-node:0.0.3-manual
-    networks:
-      - adopnetwork
-    privileged: true
-    environment:
-      - "constraint:tier==jenkins"
-      - "SLAVE_NAME=SLAVE_NODE_447"
-      - "SLAVE_LABELS=nodejs nodejs_4_4_7"
-      - "SWARM_MASTER=http://jenkins:8080/jenkins/"
-      - "SWARM_USER=jenkins"
-      - "SWARM_PASSWORD=${PASSWORD_JENKINS}"
-      - "SLAVE_EXECUTORS=${SLAVE_EXECUTORS}"
-      - "INITIAL_ADMIN_USER=${INITIAL_ADMIN_USER}"
-      - "INITIAL_ADMIN_PASSWORD=${INITIAL_ADMIN_PASSWORD_PLAIN}"
-      - "SLAVE_MOUNT_PATH=${SLAVE_MOUNT_PATH_NODE_4}"
-
-  jenkins-slave-ansible:
-    container_name: jenkins-slave-ansible
-    restart: always
-    image: avsdeveng/infra-toolkit-slave:0.1.1
-    networks:
-      - adopnetwork
-    privileged: true
-    environment:
-      - "constraint:tier==jenkins"
-      - "SLAVE_LABELS=aws ldap java8 ansible terraform packer docker"
-      - "SWARM_MASTER=http://jenkins:8080/jenkins/"
-      - "SLAVE_NAME=SLAVE_ANSIBLE"
-      - "SWARM_PASSWORD=${PASSWORD_JENKINS}"
-      - "SLAVE_EXECUTORS=2"
-      - "SLAVE_MOUNT_PATH=${SLAVE_MOUNT_PATH_ANSIBLE}"
-      
-#  jenkins-slave-node-latest:
-#    container_name: jenkins-slave-node-latest
-#    restart: always
-#    image: avsdeveng/infra-toolkit-slave:0.1.1
-#    networks:
-#      - adopnetwork
-#    privileged: true
-#    environment:
-#      - "constraint:tier==jenkins"
-#      - "SLAVE_LABELS=ldap nodejs_latest"
-#      - "SWARM_MASTER=http://jenkins:8080/jenkins/"
-#      - "SLAVE_NAME=SLAVE_ANSIBLE_2"
-#      - "SWARM_PASSWORD=${PASSWORD_JENKINS}"
-#      - "SLAVE_EXECUTORS=2"
-#      - "SLAVE_MOUNT_PATH=${SLAVE_MOUNT_PATH_NODE_LATEST}"
-    
-#  jenkins-slave-node-latest_test:
-#    container_name: jenkins-slave-node-latest-test
-#    restart: always
-#    image: avsdeveng/infra-toolkit-slave:0.1.1
-#    networks:
-#      - adopnetwork
-#    privileged: true
-#    environment:
-#      - "constraint:tier==jenkins"
-#      - "SLAVE_LABELS=ldap nodejs_latest_test"
-#      - "SWARM_MASTER=http://jenkins:8080/jenkins/"
-#      - "SLAVE_NAME=SLAVE_ANSIBLE_2_TEST"
-#      - "SWARM_PASSWORD=${PASSWORD_JENKINS}"
-#      - "SLAVE_EXECUTORS=2"
-#      - "SLAVE_MOUNT_PATH=${SLAVE_MOUNT_PATH_NODE_LATEST_TEST}"
-# #   logging:
-# #     driver: "syslog"
-# #     options:
-# #       syslog-address: "tcp://logstash:5000"
-
-  selenium-hub:
-    container_name: selenium-hub
-    restart: always
-    image: selenium/hub:3.0.1-aluminum
-    #image: avsdeveng/selenium-hub:0.0.2
-    networks:
-      - adopnetwork
-    expose:
-    - "4444"
-    ports:
-    - "4444:4444"
-    environment:
-      - "constraint:tier==private"
-      - "SE_OPTS=-host selenium-hub"
+# # TODO cleanup jenkins environment variables for GitLab
+#   jenkins:
+#     container_name: jenkins
+#     restart: always
+#     image: avsdeveng/jenkins:0.2.2
+#     #build: ../images/docker-jenkins/
+#     networks:
+#       - adopnetwork
+#     expose:
+#       - "8080"
+#       - "50000"
+#     ports:
+#       - "8080:8080"
+#       - "50000:50000"
+#     privileged: true
+#     environment:
+#       - "constraint:tier==jenkins"
+#       - "ADOP_GERRIT_ENABLED=false"
+#       - "ADOP_PLATFORM_MANAGEMENT_VERSION=0.1.1"
+#       - "JENKINS_OPTS=--prefix=/jenkins"
+#       - "ROOT_URL=${PROTO}://${TARGET_HOST}/jenkins/"
+#       - "LDAP_SERVER=${LDAP_SERVER}"
+#       - "LDAP_ROOTDN=${LDAP_FULL_DOMAIN}"
+#       - "LDAP_USER_SEARCH_BASE=${LDAP_USER_BASE_DN}"
+#       - "LDAP_USER_SEARCH=${LDAP_USER_SEARCH}"
+#       - "LDAP_GROUP_SEARCH_BASE=${LDAP_GROUP_BASE_DN}"
+#       - "LDAP_GROUP_SEARCH_FILTER="
+#       - "LDAP_GROUP_MEMBERSHIP_FILTER="
+#       - "LDAP_MANAGER_DN=${LDAP_MANAGER_DN}"
+#       - "LDAP_MANAGER_PASSWORD=${LDAP_PWD}"
+#       - "LDAP_INHIBIT_INFER_ROOTDN=false"
+#       - "LDAP_DISABLE_MAIL_ADDRESS_RESOLVER=false"
+#       - "LDAP_DISPLAY_NAME_ATTRIBUTE_NAME=displayName"
+#       - "LDAP_MAIL_ADDRESS_ATTRIBUTE_NAME=mail"
+#       - "LDAP_GROUP_NAME_ADMIN=${LDAP_GROUP_NAME_ADMIN}"
+#       - "INITIAL_ADMIN_USER=${INITIAL_ADMIN_USER}"
+#       - "INITIAL_ADMIN_PASSWORD=${INITIAL_ADMIN_PASSWORD_PLAIN}"
+#       - "SONAR_SERVER_URL=http://sonar:9000/sonar/"
+#       - "SONAR_ACCOUNT_LOGIN=${SONAR_ACCOUNT_LOGIN}"
+#       - "SONAR_ACCOUNT_PASSWORD=${PASSWORD_JENKINS}"
+#       - "SONAR_DB_URL=jdbc:mysql://sonar-mysql:3306/sonar?useUnicode=true&amp;characterEncoding=utf8"
+#       - "SONAR_DB_LOGIN=${SONAR_DB_LOGIN}"
+#       - "SONAR_DB_PASSWORD=${SONAR_DB_PASSWORD}"
+#       - "SONAR_PLUGIN_VERSION="
+#       - "SONAR_ADDITIONAL_PROPS="
+#       - "SONAR_RUNNER_VERSION=2.4"
+#       - "ANT_VERSION=1.9.4"
+#       - "MAVEN_VERSION=3.0.5"
+#       - "NODEJS_VERSION=0.12.2"
+#       - "NODEJS_GLOBAL_PACKAGES=grunt-cli@~0.1.13 bower@~1.3.12 plato@~1.2.1"
+#       - "NODEJS_PACKAGES_REFRESH_HOURS=72"
+#       - "GIT_GLOBAL_CONFIG_NAME=ADOP Jenkins"
+#       - "GIT_GLOBAL_CONFIG_EMAIL=jenkins@${LDAP_DOMAIN}"
+#       - "DOCKER_TLS_VERIFY=${DOCKER_TLS_VERIFY}"
+#       - "DOCKER_HOST=${JENKINS_DOCKER_HOST}"
+#       - "DOCKER_CLIENT_CERT_PATH=${DOCKER_CLIENT_CERT_PATH}"
+#       - "DOCKER_NETWORK_NAME=adopnetwork"
+#
+#    jenkins-slave-java:
+#     container_name: jenkins-slave-java
+#     restart: always
+#     image: avsdeveng/jenkins-slave:0.2.2
+#     networks:
+#       - adopnetwork
+#     privileged: true
+#     environment:
+#       - "constraint:tier==jenkins"
+#       - "SLAVE_LABELS=aws ldap java7 docker"
+#       - "SLAVE_NAME=SLAVE_JAVA"
+#       - "SWARM_PASSWORD=${PASSWORD_JENKINS}"
+#       - "SLAVE_EXECUTORS=2"
+#       - "INITIAL_ADMIN_USER=${INITIAL_ADMIN_USER}"
+#       - "INITIAL_ADMIN_PASSWORD=${INITIAL_ADMIN_PASSWORD_PLAIN}"
+#       - "SLAVE_MOUNT_PATH=${SLAVE_MOUNT_PATH_JAVA}"
+#
+#   jenkins-slave-node:
+#     container_name: jenkins-slave-node
+#     restart: always
+#     image: avsdeveng/jenkins_slave_node5.9.1:0.0.1
+#     networks:
+#       - adopnetwork
+#     privileged: true
+#     environment:
+#       - "constraint:tier==jenkins"
+#       - "SLAVE_NAME=SLAVE_NODE_591"
+#       - "SLAVE_LABELS=nodejs nodejs_5_9_1"
+#       - "SWARM_MASTER=http://jenkins:8080/jenkins/"
+#       - "SWARM_USER=jenkins"
+#       - "SWARM_PASSWORD=${PASSWORD_JENKINS}"
+#       - "SLAVE_EXECUTORS=${SLAVE_EXECUTORS}"
+#       - "INITIAL_ADMIN_USER=${INITIAL_ADMIN_USER}"
+#       - "INITIAL_ADMIN_PASSWORD=${INITIAL_ADMIN_PASSWORD_PLAIN}"
+#       - "SLAVE_MOUNT_PATH=${SLAVE_MOUNT_PATH_NODE}"
+#   jenkins-slave-node-4:
+#     container_name: jenkins-slave-node-4
+#     restart: always
+#     image: avsdeveng/jenkins-slave-node:0.0.3-manual
+#     networks:
+#       - adopnetwork
+#     privileged: true
+#     environment:
+#       - "constraint:tier==jenkins"
+#       - "SLAVE_NAME=SLAVE_NODE_447"
+#       - "SLAVE_LABELS=nodejs nodejs_4_4_7"
+#       - "SWARM_MASTER=http://jenkins:8080/jenkins/"
+#       - "SWARM_USER=jenkins"
+#       - "SWARM_PASSWORD=${PASSWORD_JENKINS}"
+#       - "SLAVE_EXECUTORS=${SLAVE_EXECUTORS}"
+#       - "INITIAL_ADMIN_USER=${INITIAL_ADMIN_USER}"
+#       - "INITIAL_ADMIN_PASSWORD=${INITIAL_ADMIN_PASSWORD_PLAIN}"
+#       - "SLAVE_MOUNT_PATH=${SLAVE_MOUNT_PATH_NODE_4}"
+#
+#   jenkins-slave-ansible:
+#     container_name: jenkins-slave-ansible
+#     restart: always
+#     image: avsdeveng/infra-toolkit-slave:0.1.1
+#     networks:
+#       - adopnetwork
+#     privileged: true
+#     environment:
+#       - "constraint:tier==jenkins"
+#       - "SLAVE_LABELS=aws ldap java8 ansible terraform packer docker"
+#       - "SWARM_MASTER=http://jenkins:8080/jenkins/"
+#       - "SLAVE_NAME=SLAVE_ANSIBLE"
+#       - "SWARM_PASSWORD=${PASSWORD_JENKINS}"
+#       - "SLAVE_EXECUTORS=2"
+#       - "SLAVE_MOUNT_PATH=${SLAVE_MOUNT_PATH_ANSIBLE}"
+#
+#   jenkins-slave-node-latest:
+#     container_name: jenkins-slave-node-latest
+#     restart: always
+#     image: avsdeveng/infra-toolkit-slave:0.1.1
+#     networks:
+#       - adopnetwork
+#     privileged: true
+#     environment:
+#       - "constraint:tier==jenkins"
+#       - "SLAVE_LABELS=ldap nodejs_latest"
+#       - "SWARM_MASTER=http://jenkins:8080/jenkins/"
+#       - "SLAVE_NAME=SLAVE_ANSIBLE_2"
+#       - "SWARM_PASSWORD=${PASSWORD_JENKINS}"
+#       - "SLAVE_EXECUTORS=2"
+#       - "SLAVE_MOUNT_PATH=${SLAVE_MOUNT_PATH_NODE_LATEST}"
+#
+#   jenkins-slave-node-latest_test:
+#     container_name: jenkins-slave-node-latest-test
+#     restart: always
+#     image: avsdeveng/infra-toolkit-slave:0.1.1
+#     networks:
+#       - adopnetwork
+#     privileged: true
+#     environment:
+#       - "constraint:tier==jenkins"
+#       - "SLAVE_LABELS=ldap nodejs_latest_test"
+#       - "SWARM_MASTER=http://jenkins:8080/jenkins/"
+#       - "SLAVE_NAME=SLAVE_ANSIBLE_2_TEST"
+#       - "SWARM_PASSWORD=${PASSWORD_JENKINS}"
+#       - "SLAVE_EXECUTORS=2"
+#       - "SLAVE_MOUNT_PATH=${SLAVE_MOUNT_PATH_NODE_LATEST_TEST}"
+# # #   logging:
+#  #     driver: "syslog"
+# # #     options:
+# # #       syslog-address: "tcp://logstash:5000"
+#
+  # selenium-hub:
+  #   container_name: selenium-hub
+  #   restart: always
+  #   image: selenium/hub:3.0.1-aluminum
+  #   #image: avsdeveng/selenium-hub:0.0.2
+  #   networks:
+  #     - adopnetwork
+  #   expose:
+  #   - "4444"
+  #   ports:
+  #   - "4444:4444"
+  #   environment:
+  #     - "constraint:tier==private"
+  #     - "SE_OPTS=-host selenium-hub"
+#    logging:
+#      driver: "syslog"
+#      options:
+#        syslog-address: "tcp://logstash:5000"
 
 #  selenium-node-chrome:
 #    container_name: selenium-node-chrome
@@ -439,7 +524,7 @@ services:
 #      - "HUB_PORT_4444_TCP_ADDR=selenium-hub"
 #      - "HUB_PORT_4444_TCP_PORT=4444"
 #      - "constraint:tier==private"
-  
+
 #  selenium-node-chrome:
 #    container_name: selenium-node-chrome
 #    restart: always
@@ -526,6 +611,18 @@ services:
       - "LDAP_SERVER_PORT=389"
       - "LDAP_SERVER_BIND_ID=${LDAP_ADMIN},${LDAP_FULL_DOMAIN}"
       - "LDAP_SERVER_BASE_DN=${LDAP_FULL_DOMAIN}"
+
+  sftp:
+    container_name: sftp
+    restart: always
+    image: atmoz/sftp
+    networks:
+      - adopnetwork
+    ports:
+      - "8081:22"
+    privileged: true
+    environment:
+      - "constraint:tier==public"
 
   openvpn:
     container_name: openvpn-server
