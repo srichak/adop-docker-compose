@@ -31,16 +31,13 @@
 #  - docker logs adopdockercompose_site_1 
 #  - docker logs adopdockercompose_site_1 | grep "Server running..." &> /dev/null
 #  - curl -sL -w "%{http_code}\\n" "http://localhost/adop-docker-compose/" -o /dev/null | grep "200" &> /dev/null
-#
-# language: python
-# install:
-#   - sudo pip2 install yamllint
-# script:
-#   - yamllint docker-compose.yml
-#   - yamllint compose/elk.yml
-#   - yamllint etc/volumes/nfs/default.yml
-#   - yamllint etc/logging/syslog/default.yml
 
-language: shell
+
+language: python
+install:
+  - sudo pip2 install yamllint
 script:
-  - echo "Not implemented yet. Postponed" 
+  - yamllint docker-compose.yml
+  - yamllint compose/elk.yml
+  - yamllint etc/volumes/nfs/default.yml
+  - yamllint etc/logging/syslog/default.yml

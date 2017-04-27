@@ -3,8 +3,6 @@ version: "2"
 
 services:
 
-# set LOGSTASH_HOST to dns/ip of logstash host
-
   proxy:
     logging:
       driver: "syslog"
@@ -25,6 +23,13 @@ services:
       options:
         syslog-address: "udp://${LOGSTASH_HOST}:25826"
         tag: "gitlab"
+
+  gitlab-redis:
+    logging:
+      driver: "syslog"
+      options:
+        syslog-address: "udp://${LOGSTASH_HOST}:25826"
+        tag: "gitlab-redis"
 
   sensu-uchiwa:
     logging:
@@ -53,6 +58,19 @@ services:
       options:
         syslog-address: "udp://${LOGSTASH_HOST}:25826"
         tag: "sensu-client"
+  kpi-reporter:
+    logging:
+      driver: "syslog"
+      options:
+        syslog-address: "udp://${LOGSTASH_HOST}:25826"
+        tag: "kpi-reporter"
+
+  # sensu-rabbitmq:
+  #   logging:
+  #     driver: "syslog"
+  #     options:
+  #       syslog-address: "udp://${LOGSTASH_HOST}:25826"
+  #       tag: "sensu-rabbitmq"
 
   sensu-redis:
     logging:
@@ -68,20 +86,12 @@ services:
         syslog-address: "udp://${LOGSTASH_HOST}:25826"
         tag: "sonar"
 
-  kpi-reporter:
+  jenkins:
     logging:
       driver: "syslog"
       options:
         syslog-address: "udp://${LOGSTASH_HOST}:25826"
-        tag: "kpi-reporter"
-
-
-  # jenkins:
-  #   logging:
-  #     driver: "syslog"
-  #     options:
-  #       syslog-address: "udp://${LOGSTASH_HOST}:25826"
-  #       tag: "jenkins"
+        tag: "jenkins"
 
   # jenkins-slave:
   #   logging:

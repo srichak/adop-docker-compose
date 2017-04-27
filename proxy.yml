@@ -1,0 +1,53 @@
+---
+version: "2"
+
+# set TARGET_HOST to dns/ip of proxy
+# set LOGSTASH_HOST to dns/ip of logstash host
+
+networks:
+  adopnetwork:
+    external:
+      name: ${CUSTOM_NETWORK_NAME}
+
+services:
+  proxy:
+    container_name: proxy
+    restart: always
+#    image: nginx
+    image: h3nrik/registry-ldap-auth
+     #    build: ./adop-nginx/
+    networks:
+      - adopnetwork
+    ports:
+      - "80:80"
+      - "81:81"
+    expose: 
+      - "80"
+      - "81"
+    volumes:
+      - /data/temp/nginx_config:/etc/nginx
+      - /data/temp/nginx_releasenote:/usr/share/nginx/html
+#    depends_on:
+#      - gitlab
+#      - jenkins
+#      - sonar
+#      - nexus
+#      - ldap
+#      - sensu-uchiwa
+#      - ldap-ltb
+#      - ldap-phpadmin
+#      - selenium-hub
+    # environment:
+    #   - "constraint:tier==public"
+    #   - "LDAP_SERVER=${LDAP_SERVER}"
+    #   - "LDAP_USERNAME=${LDAP_ADMIN},${LDAP_FULL_DOMAIN}"
+    #   - "LDAP_PASSWORD=${LDAP_PWD}"
+    #   - "LDAP_USER_BASE_DN=${LDAP_USER_BASE_DN},${LDAP_FULL_DOMAIN}"
+    #   - "LDAP_GROUP_ATTRIBUTE=member"
+    #   - "LDAP_USER_ID_ATTRIBUTE=cn"
+    #   - "LDAP_USER_OBJECT_CLASS=inetOrgPerson"
+#    logging:
+#      driver: syslog
+#      options:
+#        syslog-address: "tcp://logstash:5000"
+#

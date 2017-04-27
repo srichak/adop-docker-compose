@@ -1,3 +1,4 @@
+---
 version: "2"
 
 # set CUSTOM_NETWORK_NAME to the name of the custom Docker network
@@ -39,6 +40,7 @@ services:
       - /data/logstash_conf:/etc/logstash/conf.d
       - /data/logstash_logs:/var/log/logstash
 
+
   kibana:
     container_name: kibana
     restart: always
@@ -51,5 +53,3 @@ services:
       - ELASTICSEARCH_URL=http://elasticsearch:9200
     ports:
       - "5601:5601"
-    volumes:
-      - /data/kibana/config:/opt/kibana/config

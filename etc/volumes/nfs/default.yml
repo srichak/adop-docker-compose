@@ -37,6 +37,7 @@ services:
   sensu-client:
     volumes:
       - /data/sensu_client_conf:/etc/sensu/conf.d
+
   sensu-redis:
     volumes:
       - /data/sensu_redis_data:/data
@@ -48,37 +49,42 @@ services:
       - /data/sonar_logs:/opt/sonarqube/logs
 
   jenkins:
-    user: root 
+    user: root
     volumes:
-      - /data/jenkins_home:/var/jenkins_home 
-
-  jenkins-slave-java:
-    volumes:
-      - ${SLAVE_MOUNT_PATH_JAVA}:/workspace
-        
-  jenkins-slave-node:
-    volumes:
-      - ${SLAVE_MOUNT_PATH_NODE}:/workspace
-
-  jenkins-slave-node:
-    volumes:
-      - ${SLAVE_MOUNT_PATH_NODE_4}:/workspace
-
-  jenkins-slave-ansible:
-    volumes:
-      - ${SLAVE_MOUNT_PATH_ANSIBLE}:/workspace
-
-#  selenium-node-chrome:
-#    volumes:
-#      - /data/selenium_config:/var/selenium-config
-
-#  selenium-node-firefox:
-#    volumes:
-#      - /data/selenium_config:/var/selenium-config
+      - /data/jenkins_home:/var/jenkins_home
+#
+# #   jenkins-slave-java:
+#     volumes:
+#       - ${SLAVE_MOUNT_PATH_JAVA}:/workspace
+#
+#   jenkins-slave-node:
+#     volumes:
+#       - ${SLAVE_MOUNT_PATH_NODE}:/workspace
+#
+#   jenkins-slave-node:
+#     volumes:
+#       - ${SLAVE_MOUNT_PATH_NODE_4}:/workspace
+#
+#   jenkins-slave-ansible:
+#     volumes:
+#       - ${SLAVE_MOUNT_PATH_ANSIBLE}:/workspace
+#
+  # selenium-node-chrome:
+  #   volumes:
+  #     - /data/selenium_config:/var/selenium-config
+  # selenium-node-firefox:
+  #   volumes:
+  #     - /data/selenium_config:/var/selenium-config
 
   nexus:
     volumes:
       - /data/nexus_sonatype_work:/sonatype-work
+
+  sftp:
+    volumes:
+      - /sftp/users.conf:/etc/sftp-users.conf:ro
+      - /sftp/data:/home
+      - /sftp/sftp.d:/etc/sftp.d
 
   openvpn:
     volumes:
