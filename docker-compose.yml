@@ -499,7 +499,7 @@ services:
   ldap-ltb:
     container_name: ldap-ltb
     restart: always
-    image: avsdeveng/ldap-ltb:0.2.1
+    image: avsdeveng/ldap-ltb:0.2.2
     networks:
       - adopnetwork
     expose:
