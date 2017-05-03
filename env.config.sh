@@ -42,6 +42,7 @@ export SONAR_DB_PASSWORD=${SONAR_MYSQL_PASSWORD}
 export SLAVE_EXECUTORS=1
 export SLAVE_MOUNT_PATH_NODE="/local_data/jenkins_slave_node"
 export SLAVE_MOUNT_PATH_NODE_4="/local_data/jenkins_slave_node_4"
+export SLAVE_MOUNT_PATH_NODE_TURNER="/local_data/jenkins_slave_node_turner"
 export SLAVE_MOUNT_PATH_JAVA="/local_data/jenkins_slave_node"
 export SLAVE_MOUNT_PATH_ANSIBLE="/local_data/jenkins_slave_ansible"
 #export SLAVE_MOUNT_PATH_NODE_LATEST="/local_data/jenkins_slave_node_latest"
