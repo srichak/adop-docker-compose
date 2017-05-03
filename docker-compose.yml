@@ -356,7 +356,7 @@ jenkins-slave-node-turner:
       - "SLAVE_EXECUTORS=${SLAVE_EXECUTORS}"
       - "INITIAL_ADMIN_USER=${INITIAL_ADMIN_USER}"
       - "INITIAL_ADMIN_PASSWORD=${INITIAL_ADMIN_PASSWORD_PLAIN}"
-      - "SLAVE_MOUNT_PATH=${SLAVE_MOUNT_PATH_NODE}"
+      - "SLAVE_MOUNT_PATH=${SLAVE_MOUNT_PATH_NODE_TURNER}"
 
   jenkins-slave-node-4:
     container_name: jenkins-slave-node-4
