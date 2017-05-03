@@ -60,13 +60,17 @@ services:
     volumes:
       - ${SLAVE_MOUNT_PATH_NODE}:/workspace
 
-  jenkins-slave-node:
+  jenkins-slave-node-4:
     volumes:
       - ${SLAVE_MOUNT_PATH_NODE_4}:/workspace
 
   jenkins-slave-ansible:
     volumes:
       - ${SLAVE_MOUNT_PATH_ANSIBLE}:/workspace
+     
+  jenkins-slave-node-turner:
+    volumes:
+      - ${SLAVE_MOUNT_PATH_NODE_TURNER}:/workspace
 
 #  selenium-node-chrome:
 #    volumes:
