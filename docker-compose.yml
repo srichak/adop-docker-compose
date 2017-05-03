@@ -348,8 +348,8 @@ jenkins-slave-node-turner:
     privileged: true
     environment:
       - "constraint:tier==jenkins"
-      - "SLAVE_NAME=SLAVE_NODE_591"
-      - "SLAVE_LABELS=turner nodejs nodejs_5_9_1"
+      - "SLAVE_NAME=SLAVE_NODE_591_TURNER"
+      - "SLAVE_LABELS=turner_nodejs nodejs nodejs_5_9_1"
       - "SWARM_MASTER=http://jenkins:8080/jenkins/"
       - "SWARM_USER=jenkins"
       - "SWARM_PASSWORD=${PASSWORD_JENKINS}"
